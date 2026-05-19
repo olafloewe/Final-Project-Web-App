@@ -14,6 +14,22 @@
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return $num === 0 ? (int)$data['player_one'] : (int)$data['player_two'];
     }
+
+    function get_game_status(string $game_code) : int {
+        include('db_credentials.php');
+
+        $sql = "
+            SELECT game_status FROM games
+            WHERE game_code = :game_code AND game_status != 0;
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$data['game_status'];
+    }
 ?>
 
 <?php
@@ -86,7 +102,7 @@ if (empty($game_code) || empty($user_id)) {
         </script>
         
         <?php
-            if ($_SESSION['user_id'] === get_player_id($game_code)) { ?>
+            if (get_game_status($game_code) === 1) { ?>
                 <div id="modal_container" class="modal_container show-modal">
                     <div id="invite_modal">
                         <h2>INVITE YOUR FRIEND!</h2>
@@ -108,12 +124,9 @@ if (empty($game_code) || empty($user_id)) {
 /*
 $game_started = FALSE;
 
-$player_one = get_player_id($game_code);
-$player_two = get_player_id($game_code, 1);
-
 // check whether player_two joined
 while ($player_two === 0) {
-    sleep(1);
+    sleep(2);
     $player_two = get_player_id($game_code, 1);
 }
 

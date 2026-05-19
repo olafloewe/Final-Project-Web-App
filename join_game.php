@@ -29,14 +29,26 @@ if (!code_exists($game_code)) {
 $user_id = $_SESSION['user_id'];
 
 $sql = "
-UPDATE games
-SET player_two = :user_id
-WHERE game_code = :game_code;
+    UPDATE games
+    SET player_two = :user_id
+    WHERE game_code = :game_code;
 ";
 
 $stmt = $pdo->prepare($sql);
 
 $stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
+$stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
+
+$stmt->execute();
+
+$sql = "
+    UPDATE games
+    SET game_status = 2
+    WHERE game_code = :game_code;
+";
+
+$stmt = $pdo->prepare($sql);
+
 $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
 
 $stmt->execute();
