@@ -118,7 +118,7 @@
             passwordInput.addEventListener('input', function() {
             let password = passwordInput.value;
 
-            // check whether password is of correct length
+            // check whether password is of correct length     
             if ((password.length < 8 || password.length > 64) && password.length > 0) {
                 passwordErrorDiv.innerHTML = '<p style="color: red;">The password must be 8-64 characters long!</p>';
             } else {
