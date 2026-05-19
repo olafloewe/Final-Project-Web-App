@@ -1,0 +1,80 @@
+#board {
+  z-index: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  grid-template-rows: repeat(3, 80px);
+  gap: 4px;
+}
+
+
+.cell {
+  z-index: 0;
+  border: 1px solid #9d10af;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #fff;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  width: 80px;
+}
+
+button {
+  background-color: darkmagenta;
+  border: 0;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 25px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  margin: 2px 5px;
+}
+
+.modal_container {
+  opacity: 0;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;             
+  align-items: center;       
+  justify-content: center; 
+}
+
+.show-modal {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#invite_modal {
+  background-color: white;
+  border: 2px solid darkmagenta;
+  border-radius: 10px;
+  color: rgb(85, 1, 85);
+  padding: 30px 50px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  width: 600px;
+  max-width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 10;
+}
+
+#code_container {
+  background-color: white;
+  border: 2px solid darkmagenta;
+  border-radius: 10px;
+  color: rgb(85, 1, 85);
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  text-align: center;
+}

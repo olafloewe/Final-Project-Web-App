@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="general_page_settings.css">
+        <link rel="stylesheet" href="login.css">
+        <link rel="stylesheet" href="sign_up.css">
+        <title>Sign up</title>
+
+        <script>
+            // check whether given character is a letter
+            function isLetter(char) {
+                return /^[a-zA-Z]$/.test(char);
+            }
+
+            // check whether given character is lowercase
+            function isLowercase(char) {
+                return /^[a-z]$/.test(char);
+            }
+
+            // check whether given character is uppercase
+            function isUppercase(char) {
+                return /^[A-Z]$/.test(char);
+            }
+
+            // check whether given character is a number
+            function isDigit(char) {
+                return /^[0-9]$/.test(char);
+            }
+            
+            // check whether given character is a special characters
+            function isSpecialChar(char) {
+                return /^[^a-zA-Z0-9]$/.test(char);
+            }
+
+            // check whether given text contains only numbers and letters
+            function containsDigitsAndLetters(text) {
+                let isValid = false;
+                for (let i = 0; i < text.length; i++) {
+                    isValid = (isLetter(text[i]) || isDigit(text[i]));
+                    if (!isValid) return false;
+                }
+                return true;
+            }
+
+            function isProperPassword(password) {
+                let containsUpper = false;
+                let containsLower = false;
+                let containsDigit = false;
+                let containsSpecial = false;
+
+                for (let i = 0; i < password.length; i++) {
+                    if (!containsUpper) containsUpper = isUppercase(password[i]);
+                    if (!containsLower) containsLower = isLowercase(password[i]);
+                    if (!containsDigit) containsDigit = isDigit(password[i]);
+                    if (!containsSpecial) containsSpecial = isSpecialChar(password[i]);
+                }
+                return containsUpper && containsLower && containsDigit && containsSpecial;
+            }
+
+            function checkForErrors(event) {
+                event.preventDefault(); 
+                let usernameErrorDiv = document.getElementById('username_error');
+                let passwordErrorDiv = document.getElementById('password_error');
+                let repeatPasswordErrorDiv = document.getElementById('repeat_password_error');
+
+                if (usernameErrorDiv.innerHTML === "" &&
+                    passwordErrorDiv.innerHTML === "" &&
+                    repeatPasswordErrorDiv.innerHTML === "") {
+                    document.getElementById("signup_form").submit();
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <div class="container" id="sign_up_form">
+            <h1>Sign up:</h1>
+            <form id="signup_form" method="post" action="create_user.php" autocomplete="off">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <div class="error" id="username_error"></div>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <div class="error" id="password_error"></div>
+                
+                <label for="repeat_password">Repeat password</label>
+                <input type="password" id="repeat_password" name="repeat_password" required>
+                <div class="error" id="repeat_password_error"></div>
+                
+                <button type="button" onClick="checkForErrors(event)">SIGN UP</button>
+            </form>
+        </div>
+
+        <script>
+            let usernameInput = document.getElementById('username');
+            let usernameErrorDiv = document.getElementById('username_error');
+
+            usernameInput.addEventListener('input', function() {
+            let username = usernameInput.value;
+            
+            // check whether username is of correct length
+            if ((username.length < 3 || username.length > 40) && username.length > 0) {
+                usernameErrorDiv.innerHTML = '<p style="color: red;">The username must be 3-40 characters long!</p>';
+            } else {
+                // check whether username contains only numbers and letters
+                if (!containsDigitsAndLetters(username) && username.length > 0) {
+                    usernameErrorDiv.innerHTML = '<p style="color: red;">The username can only contain letters and numbers!';
+                } else usernameErrorDiv.innerHTML = "";
+            }
+            })
+        </script>
+
+        <script>
+            let passwordInput = document.getElementById('password');
+            let passwordErrorDiv = document.getElementById('password_error');
+
+            passwordInput.addEventListener('input', function() {
+            let password = passwordInput.value;
+
+            // check whether password is of correct length
+            if ((password.length < 8 || password.length > 64) && password.length > 0) {
+                passwordErrorDiv.innerHTML = '<p style="color: red;">The password must be 8-64 characters long!</p>';
+            } else {
+                // check whether password contains at least one number, uppercase, lowercase letter and special character
+                if (!isProperPassword(password) && password.length > 0) {
+                    passwordErrorDiv.innerHTML = '<p style="color: red;">The username must contain at least one uppercase and lowercase letter, digit, special character!';
+                } else passwordErrorDiv.innerHTML = "";
+            }
+            })
+        </script>
+
+        <script>
+            let repeatPasswordInput = document.getElementById('repeat_password');
+            let repeatPasswordErrorDiv = document.getElementById('repeat_password_error');
+
+            repeatPasswordInput.addEventListener('input', function() {
+            let password = passwordInput.value;
+            let repeat_password = repeatPasswordInput.value;
+            
+            // check whether repeated password is the same as the initial one
+            if (password !== repeat_password && password !== "" && repeat_password !== "") {
+                repeatPasswordErrorDiv.innerHTML = '<p style="color: red;">The repeated password is not the same!';
+            } else repeatPasswordErrorDiv.innerHTML = '';
+            })
+        </script>
+    </body>
+</html>
