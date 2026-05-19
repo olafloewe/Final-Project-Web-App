@@ -54,6 +54,14 @@ if (empty($game_code) || empty($user_id)) {
         <title>Tic-Tac-Toe</title>
 
         <script>
+            function gameActive() {
+                 fetch('check_game_status.php?game_code=<?php echo $game_code; ?>')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.game_status === 2) return TRUE;
+                });
+            }
+
             function copyCode() {
                 $code = document.getElementById('game_code').textContent;
                 navigator.clipboard.writeText($code).then(() => {
@@ -124,10 +132,11 @@ if (empty($game_code) || empty($user_id)) {
 /*
 $game_started = FALSE;
 
+$game_status = get_game_status($game_code);
 // check whether player_two joined
-while ($player_two === 0) {
+while ($game_status === 1) {
     sleep(2);
-    $player_two = get_player_id($game_code, 1);
+    $game_status = get_game_status($game_code);
 }
 
 $game_started = TRUE;*/
