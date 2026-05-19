@@ -16,7 +16,7 @@ if (!empty($sign_up_message)) unset($_SESSION['sign_up_message']);
     <head>
         <link rel="stylesheet" href="general_page_settings.css">
         <link rel="stylesheet" href="login.css">
-        <title>Login</title>
+        <title>Login</title>    
     </head>
       
     <body>
@@ -28,7 +28,7 @@ if (!empty($sign_up_message)) unset($_SESSION['sign_up_message']);
                     echo '<p style="color: white;">The sign up was successful!<br>Please login below</p>';
                 }
             ?>
-            
+
             
             <form method="post" action="login_check_credentials.php" autocomplete="off">
                 <label for="username">Username:</label>
