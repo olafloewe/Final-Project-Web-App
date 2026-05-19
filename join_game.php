@@ -5,7 +5,7 @@ function code_exists(string $game_code) : bool {
     $sql = "
     SELECT game_code
     FROM games
-    WHERE game_code = :game_code AND is_in_progress = 1 AND player_two IS NULL;
+    WHERE game_code = :game_code AND game_status= 1 AND player_two IS NULL;
     ";
 
     $stmt = $pdo->prepare($sql);

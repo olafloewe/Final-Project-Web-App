@@ -5,7 +5,7 @@ function is_unique_code(string $game_code) : bool {
     $sql = "
     SELECT game_code
     FROM games
-    WHERE game_code = :game_code AND is_in_progress = 1;
+    WHERE game_code = :game_code AND game_status != 0;
     ";
 
     $stmt = $pdo->prepare($sql);
