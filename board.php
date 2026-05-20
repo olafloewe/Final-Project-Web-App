@@ -3,7 +3,8 @@
         include('db_credentials.php');
 
         $sql = "
-            SELECT player_one, player_two FROM games
+            SELECT player_one, player_two 
+            FROM games
             WHERE game_code = :game_code AND game_status != 0;
         ";
 
@@ -19,7 +20,8 @@
         include('db_credentials.php');
 
         $sql = "
-            SELECT game_status FROM games
+            SELECT game_status 
+            FROM games
             WHERE game_code = :game_code AND game_status != 0;
         ";
 
@@ -29,6 +31,30 @@
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return (int)$data['game_status'];
+    }
+
+    function get_player_turn($game_code) {
+        include('db_credentials.php');
+
+        $sql = "
+            SELECT current_turn 
+            FROM games
+            WHERE game_code = :game_code AND game_status != 0;
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $current_turn = $data['current_turn'] ?? '';
+
+        if (empty(current_turn)) {
+            return set_current_turn($game_code, $current_turn);
+        }
+
+        return $current_turn;
     }
 ?>
 
@@ -85,10 +111,12 @@ if (empty($game_code) || empty($user_id)) {
 
             function startGame() {
                 getPlayerSymbol().then($symbol => {
-                    console.log($symbol);
+                    let i = 0;
+                    while (i < 9) {
+
+                    }
                 });
             }
-
             
         </script>
     </head>
