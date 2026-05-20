@@ -55,11 +55,19 @@ if (empty($game_code) || empty($user_id)) {
 
         <script>
             function gameActive() {
-                 fetch('check_game_status.php?game_code=<?php echo $game_code; ?>')
+                fetch('check_game_status.php?game_code=<?php echo $game_code; ?>')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.game_status === 2) return TRUE;
+                    if (data.game_status === 2) {
+                        document.getElementById('wait-message').innerHTML = "";
+                        startGame();
+                    }
+                    else setTimeout(gameActive, 2000);
                 });
+            }
+
+            function startGame() {
+                
             }
 
             function copyCode() {
@@ -76,6 +84,7 @@ if (empty($game_code) || empty($user_id)) {
     </head>
 
     <body>
+        <div class="message" id="wait-message"></div>
         <div id="board">
             <div class="cell" data-cell="0"></div>
             <div class="cell" data-cell="1"></div>
@@ -111,6 +120,10 @@ if (empty($game_code) || empty($user_id)) {
         
         <?php
             if (get_game_status($game_code) === 1) { ?>
+                <script>
+                    document.getElementById('wait-message').innerHTML = "<p>Waiting for other player to join...</p>";
+                </script>
+
                 <div id="modal_container" class="modal_container show-modal">
                     <div id="invite_modal">
                         <h2>INVITE YOUR FRIEND!</h2>
@@ -125,19 +138,9 @@ if (empty($game_code) || empty($user_id)) {
             <?php
             }
         ?>
+
+        <script>
+            gameActive();
+        </script>
     </body>
 </html>
-
-<?php
-/*
-$game_started = FALSE;
-
-$game_status = get_game_status($game_code);
-// check whether player_two joined
-while ($game_status === 1) {
-    sleep(2);
-    $game_status = get_game_status($game_code);
-}
-
-$game_started = TRUE;*/
-?>
