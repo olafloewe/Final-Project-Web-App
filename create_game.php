@@ -43,6 +43,7 @@ $stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
 
 $stmt->execute();
 
+$_SESSION['player_num'] = '0';
 $_SESSION['game_code'] = $game_code;
 
 header("Location: board.php");

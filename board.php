@@ -44,8 +44,6 @@ if (empty($game_code) || empty($user_id)) {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -54,6 +52,17 @@ if (empty($game_code) || empty($user_id)) {
         <title>Tic-Tac-Toe</title>
 
         <script>
+            function copyCode() {
+                $code = document.getElementById('game_code').textContent;
+                navigator.clipboard.writeText($code).then(() => {
+                    alert('Code copied to clipboard!');
+                });
+            }
+
+            function closeModal() {
+               document.getElementById('modal_container').classList.remove('show-modal');
+            }     
+
             function gameActive() {
                 fetch('check_game_status.php?game_code=<?php echo $game_code; ?>')
                 .then(response => response.json())
@@ -66,20 +75,21 @@ if (empty($game_code) || empty($user_id)) {
                 });
             }
 
-            function startGame() {
-                
-            }
-
-            function copyCode() {
-                $code = document.getElementById('game_code').textContent;
-                navigator.clipboard.writeText($code).then(() => {
-                    alert('Code copied to clipboard!');
+            function getPlayerSymbol() {
+                return fetch('get_player_symbol.php?game_code=<?php echo $game_code; ?>')
+                .then(response => response.json())
+                .then(data => {
+                    return data.symbol;
                 });
             }
 
-            function closeModal() {
-               document.getElementById('modal_container').classList.remove('show-modal');
+            function startGame() {
+                getPlayerSymbol().then($symbol => {
+                    console.log($symbol);
+                });
             }
+
+            
         </script>
     </head>
 
