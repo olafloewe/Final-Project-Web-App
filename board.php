@@ -1,49 +1,49 @@
 <?php
-    function get_player_id(string $game_code, int $num = 0) : int {
+    function get_player_id(int $game_id, int $num = 0) : int {
         include('db_credentials.php');
 
         $sql = "
             SELECT player_one, player_two 
             FROM games
-            WHERE game_code = :game_code AND game_status != 0;
+            WHERE game_id = :game_id;
         ";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
+        $stmt->bindValue(':game_id', $game_id, PDO::PARAM_STR);
         $stmt->execute();
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return $num === 0 ? (int)$data['player_one'] : (int)$data['player_two'];
     }
 
-    function get_game_status(string $game_code) : int {
+    function get_game_status(int $game_id) : int {
         include('db_credentials.php');
 
         $sql = "
             SELECT game_status 
             FROM games
-            WHERE game_code = :game_code AND game_status != 0;
+            WHERE game_id = :game_id;
         ";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
+        $stmt->bindValue(':game_id', $game_id, PDO::PARAM_STR);
         $stmt->execute();
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         return (int)$data['game_status'];
     }
 
-    function get_player_turn($game_code) {
+    function get_player_turn(int $game_id) {
         include('db_credentials.php');
 
         $sql = "
             SELECT current_turn 
             FROM games
-            WHERE game_code = :game_code AND game_status != 0;
+            WHERE game_id = :game_id;
         ";
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
+        $stmt->bindValue(':game_id', $game_id, PDO::PARAM_STR);
         $stmt->execute();
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -51,7 +51,7 @@
         $current_turn = $data['current_turn'] ?? '';
 
         if (empty(current_turn)) {
-            return set_current_turn($game_code, $current_turn);
+            return set_current_turn($game_id, $current_turn);
         }
 
         return $current_turn;
@@ -61,10 +61,14 @@
 <?php
 session_start();
 
+$game_id = (int)$_SESSION['game_id'] ?? "";
 $game_code = $_SESSION['game_code'] ?? "";
 $user_id = $_SESSION['user_id'] ?? "";
+$player_num = $_SESSION['player_num'] ?? "";
 
-if (empty($game_code) || empty($user_id)) {
+echo($game_id);
+
+if (empty($game_id)) {
     header("Location: login.php");
     exit();
 }
@@ -90,7 +94,7 @@ if (empty($game_code) || empty($user_id)) {
             }     
 
             function gameActive() {
-                fetch('check_game_status.php?game_code=<?php echo $game_code; ?>')
+                fetch('check_game_status.php?game_id=<?php echo $game_id; ?>')
                 .then(response => response.json())
                 .then(data => {
                     if (data.game_status === 2) {
@@ -102,7 +106,7 @@ if (empty($game_code) || empty($user_id)) {
             }
 
             function getPlayerSymbol() {
-                return fetch('get_player_symbol.php?game_code=<?php echo $game_code; ?>')
+                return fetch('get_player_symbol.php?game_id=<?php echo $player_num; ?>')
                 .then(response => response.json())
                 .then(data => {
                     return data.symbol;
@@ -113,7 +117,7 @@ if (empty($game_code) || empty($user_id)) {
                 getPlayerSymbol().then($symbol => {
                     let i = 0;
                     while (i < 9) {
-
+                        fetch()
                     }
                 });
             }
@@ -157,7 +161,7 @@ if (empty($game_code) || empty($user_id)) {
         </script>
         
         <?php
-            if (get_game_status($game_code) === 1) { ?>
+            if (get_game_status($game_id) === 1) { ?>
                 <script>
                     document.getElementById('wait-message').innerHTML = "<p>Waiting for other player to join...</p>";
                 </script>

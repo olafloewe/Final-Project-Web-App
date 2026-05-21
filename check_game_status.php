@@ -2,16 +2,16 @@
 session_start();
 include('db_credentials.php');
 
-$game_code = $_GET['game_code'];
+$game_id = $_GET['game_id'];
 
 $sql = "
     SELECT game_status
     FROM games 
-    WHERE game_code = :game_code AND game_status != 0;
+    WHERE game_id = :game_id;
     ";
 
 $stmt = $pdo->prepare($sql);
-$stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
+$stmt->bindValue(':game_id', $game_id, PDO::PARAM_STR);
 $stmt->execute();
 
 $data = $stmt->fetch(PDO::FETCH_ASSOC);

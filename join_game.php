@@ -16,6 +16,23 @@ function code_exists(string $game_code) : bool {
     return FALSE;
 }
 
+function get_game_id(string $game_code) : int {
+    include('db_credentials.php');
+
+    $sql = "
+    SELECT game_id
+    FROM games
+    WHERE game_code = :game_code AND game_status != 0;
+    ";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue('game_code', $game_code, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    return (int)$data['game_id'];
+}
+
 session_start();
 include('db_credentials.php');
 $game_code = $_POST['game_code'];
@@ -54,6 +71,8 @@ $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
 $stmt->execute();
 
 $_SESSION['player_num'] = '1';
+$_SESSION['game_code'] = $game_code;
+$_SESSION['game_id'] = (int)get_game_id($game_code);
 
 header('Location: board.php');
 exit();

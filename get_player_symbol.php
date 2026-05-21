@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$player_num = $_SESSION['player_num'] ?? '';
+$player_num = $_GET['player_num'] ?? '';
 
 $symbol = $player_num === '0' ? "X" : "O";
 
