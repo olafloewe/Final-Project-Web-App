@@ -130,15 +130,31 @@ if (empty($game_id)) {
             }*/
 
             function startGame() {
-                getPlayerSymbol().then(symbol => {
-                    fetch('set_player_turn.php?game_id=<?php echo $game_id; ?>').then(() => {
-                        getPlayerTurn().then(current_turn => {
+            getPlayerSymbol()
+            .then(symbol => {
+                fetch('set_player_turn.php?game_id=<?php echo $game_id; ?>')
+                .then(() => {
+                    getPlayerTurn()
+                    .then(current_turn => {
                         console.log(current_turn);
-                        })
-                    })
-                    
+                        fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${current_turn}`)
+                        .then(() => {
+                            getPlayerTurn()
+                            .then(current_turn => {
+                                console.log(current_turn);
+                                fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${current_turn}`)
+                                .then(() => {
+                                    getPlayerTurn()
+                                    .then(current_turn => {
+                                        console.log(current_turn);
+                                    });
+                                });
+                            });
+                        });
+                    });
                 });
-            }
+            });
+        }
             
         </script>
     </head>
