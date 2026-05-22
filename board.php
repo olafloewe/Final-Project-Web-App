@@ -124,8 +124,8 @@ if (empty($game_id)) {
                     console.log("Turn: $playerNum");
                     return true;
                 } else {
-                    console.log('not your turn, you idiot');
-                    setTimeout(waitForTurn, 2000);
+                    console.log('not your turn');
+                   setTimeout(waitForTurn, 2000);
                 }
             }*/
 
