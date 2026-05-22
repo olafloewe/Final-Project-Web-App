@@ -70,9 +70,11 @@ $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
 
 $stmt->execute();
 
+$game_id = $pdo->lastInsertId();
+
 $_SESSION['player_num'] = '1';
 $_SESSION['game_code'] = $game_code;
-$_SESSION['game_id'] = (int)get_game_id($game_code);
+$_SESSION['game_id'] = get_game_id($game_code);
 
 header('Location: board.php');
 exit();

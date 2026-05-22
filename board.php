@@ -61,7 +61,7 @@
 <?php
 session_start();
 
-$game_id = (int)$_SESSION['game_id'] ?? "";
+$game_id = $_SESSION['game_id'] ?? "";
 $game_code = $_SESSION['game_code'] ?? "";
 $user_id = $_SESSION['user_id'] ?? "";
 $player_num = $_SESSION['player_num'] ?? "";
@@ -106,19 +106,37 @@ if (empty($game_id)) {
             }
 
             function getPlayerSymbol() {
-                return fetch('get_player_symbol.php?game_id=<?php echo $player_num; ?>')
+                return fetch('get_player_symbol.php?player_num=<?php echo $player_num; ?>')
                 .then(response => response.json())
-                .then(data => {
-                    return data.symbol;
-                });
+                .then(data => data.symbol);
             }
 
+            function getPlayerTurn() {
+                return fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>')
+                .then(response => response.json())
+                .then(data => data.current_turn);
+            }
+
+            /*function waitForTurn() {
+                let playerNum = <?php echo $player_num; ?>
+                let currentTurn = getPlayerTurn();
+                if (playerNum === currentTurn) {
+                    console.log("Turn: $playerNum");
+                    return true;
+                } else {
+                    console.log('not your turn, you idiot');
+                    setTimeout(waitForTurn, 2000);
+                }
+            }*/
+
             function startGame() {
-                getPlayerSymbol().then($symbol => {
-                    let i = 0;
-                    while (i < 9) {
-                        fetch()
-                    }
+                getPlayerSymbol().then(symbol => {
+                    fetch('set_player_turn.php?game_id=<?php echo $game_id; ?>').then(() => {
+                        getPlayerTurn().then(current_turn => {
+                        console.log(current_turn);
+                        })
+                    })
+                    
                 });
             }
             

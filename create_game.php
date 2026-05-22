@@ -43,15 +43,7 @@ $stmt->bindValue(':user_id', $user_id, PDO::PARAM_STR);
 
 $stmt->execute();
 
-$sql = "SELECT game_id FROM games WHERE game_code = :game_code AND game_status = 1";
-$stmt = $pdo->prepare($sql);
-$stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
-$stmt->execute();
-
-$data = $stmt->fetch(PDO::FETCH_ASSOC);
-$game_id = (int)$data['game_id'];
-
-//$game_id = $pdo->lastInsertId();
+$game_id = $pdo->lastInsertId();
 
 $_SESSION['player_num'] = '0';
 $_SESSION['game_code'] = $game_code;
