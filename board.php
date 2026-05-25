@@ -111,47 +111,28 @@ if (empty($game_id)) {
                 .then(data => data.symbol);
             }
 
-            function getPlayerTurn() {
-                return fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>')
+            function waitForTurn() {
+                fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>')
                 .then(response => response.json())
-                .then(data => data.current_turn);
+                .then(data => {
+                    let playerNum = <?php echo $player_num; ?>
+                    //let currentTurn = data.current_turn; //this
+                    /*if (playerNum === currentTurn) {
+                        console.log(`Turn: ${playerNum}`);
+                    } else {
+                        console.log('not your turn');
+                        setTimeout(waitForTurn, 2000);
+                    }*/
+                })
             }
-
-            /*function waitForTurn() {
-                let playerNum = <?php echo $player_num; ?>
-                let currentTurn = getPlayerTurn();
-                if (playerNum === currentTurn) {
-                    console.log("Turn: $playerNum");
-                    return true;
-                } else {
-                    console.log('not your turn');
-                   setTimeout(waitForTurn, 2000);
-                }
-            }*/
 
             function startGame() {
             getPlayerSymbol()
             .then(symbol => {
-                fetch('set_player_turn.php?game_id=<?php echo $game_id; ?>')
+                let playerSymbol = symbol;
+                fetch('set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=-1')
                 .then(() => {
-                    getPlayerTurn()
-                    .then(current_turn => {
-                        console.log(current_turn);
-                        fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${current_turn}`)
-                        .then(() => {
-                            getPlayerTurn()
-                            .then(current_turn => {
-                                console.log(current_turn);
-                                fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${current_turn}`)
-                                .then(() => {
-                                    getPlayerTurn()
-                                    .then(current_turn => {
-                                        console.log(current_turn);
-                                    });
-                                });
-                            });
-                        });
-                    });
+                    waitForTurn();
                 });
             });
         }
