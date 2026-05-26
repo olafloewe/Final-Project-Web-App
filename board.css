@@ -8,6 +8,8 @@
 
 
 .cell {
+  pointer-events: none;
+  opacity: 0.5;
   z-index: 0;
   border: 1px solid #9d10af;
   font-size: 2rem;
@@ -45,7 +47,7 @@ button {
   justify-content: center; 
 }
 
-.show-modal {
+.show {
   opacity: 1;
   pointer-events: auto;
 }

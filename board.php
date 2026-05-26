@@ -90,8 +90,14 @@ if (empty($game_id)) {
             }
 
             function closeModal() {
-               document.getElementById('modal_container').classList.remove('show-modal');
-            }     
+               document.getElementById('modal_container').classList.remove('show');
+            }
+            
+            function enableBoard() {
+                cells.forEach(cell => {
+                    cell.classList.add('show');
+                })
+            }
 
             function gameActive() {
                 fetch('check_game_status.php?game_id=<?php echo $game_id; ?>')
@@ -111,43 +117,69 @@ if (empty($game_id)) {
                 .then(data => data.symbol);
             }
 
-            function makeMove(current_turn) {
-                fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${current_turn}`)
-                .then(() => {
-                    console.log('done')
-                })
+            function changePlayerTurn() {
+                return new Promise(resolve => {
+                    fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${currentTurn}`)
+                    .then(() => {
+                        console.log('ok')
+                        resolve(true);
+                    })
+                }) 
+            }
+
+           async function madeMove() {
+                while (gameState === newGameState.join('')) {
+                    await new Promise(resolve => {
+                        console.log('no move');
+                        setTimeout(resolve, 100);
+                    })
+                }
+                console.log('move');
+                isPlayerTurn = false;
+                gameState = newGameState.join('');
             }
 
             function waitForTurn() {
-                fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>')
-                .then(response => response.json())
-                .then(data => {
-                    let playerNum = <?php echo $player_num; ?>;
-                    if (data.current_turn === playerNum) {
-                        console.log('your turn')
-                        makeMove(data.current_turn);
-                    }
-                    else {
-                        console.log('not your turn, retard')
-                        setTimeout(waitForTurn, 2000);
-                    }
-                });
+                return new Promise(resolve => {
+                    fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>')
+                    .then(response => response.json())
+                    .then(data => {
+                        currentTurn = data.current_turn;
+                        if (currentTurn === playerNum) {
+                            console.log('your turn')
+                            isPlayerTurn = true;
+                            resolve(true);
+                        }
+                        else {
+                            console.log('not your turn')
+                            setTimeout(() => {
+                                waitForTurn()
+                                .then(resolve);  
+                            }, 2000);
+                        }
+                    });
+                })
+            }
+
+            async function game() {
+                enableBoard();
+                for(let i = 0; i < 9; i++) {
+                    await waitForTurn();
+                    console.log('wait')
+                    await madeMove();
+                    console.log('move');
+                    await changePlayerTurn();
+                }
             }
 
             function startGame() {
-            getPlayerSymbol()
-            .then(symbol => {
-                let playerSymbol = symbol;
-                fetch('set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=-1')
-                .then(() => {
-                    for (let i = 0; i < 9; i++){
-                        waitForTurn();
-                    }
-                    
-                    
+                getPlayerSymbol()
+                .then(symbol => {
+                    playerSymbol = symbol;
+                    fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${currentTurn}`)
+                    .then(() => game());
                 });
-            });
-        }
+            }
             
         </script>
     </head>
@@ -155,37 +187,16 @@ if (empty($game_id)) {
     <body>
         <div class="message" id="wait-message"></div>
         <div id="board">
-            <div class="cell" data-cell="0"></div>
-            <div class="cell" data-cell="1"></div>
-            <div class="cell" data-cell="2"></div>
-            <div class="cell" data-cell="3"></div>
-            <div class="cell" data-cell="4"></div>
-            <div class="cell" data-cell="5"></div>
-            <div class="cell" data-cell="6"></div>
-            <div class="cell" data-cell="7"></div>
-            <div class="cell" data-cell="8"></div>
+            <div class="cell" data-num ="0"></div>
+            <div class="cell" data-num ="1"></div>
+            <div class="cell" data-num ="2"></div>
+            <div class="cell" data-num ="3"></div>
+            <div class="cell" data-num ="4"></div>
+            <div class="cell" data-num ="5"></div>
+            <div class="cell" data-num ="6"></div>
+            <div class="cell" data-num ="7"></div>
+            <div class="cell" data-num ="8"></div>
         </div>
-
-        <script>
-            $symbol = "O"
-            $cells = document.querySelectorAll('.cell');
-            $cells.forEach($cell => {
-            $cell.addEventListener('click', function() {
-                    if ($cell.innerHTML === "") {
-                        if ($symbol === "O") {
-                            $cell.innerHTML = '<img src="./images/blue_circle.png" width="60" height="auto">'
-                            $cell.dataset.symbol = "O";
-                            $symbol = "X"
-                        }
-                        else {
-                            $cell.innerHTML = '<img src="./images/black_x.png" width="60" height="auto">'
-                            $cell.dataset.symbol = "X";
-                            $symbol = "O"
-                        }
-                    }
-                });
-            });
-        </script>
         
         <?php
             if (get_game_status($game_id) === 1) { ?>
@@ -193,7 +204,7 @@ if (empty($game_id)) {
                     document.getElementById('wait-message').innerHTML = "<p>Waiting for other player to join...</p>";
                 </script>
 
-                <div id="modal_container" class="modal_container show-modal">
+                <div id="modal_container" class="modal_container show">
                     <div id="invite_modal">
                         <h2>INVITE YOUR FRIEND!</h2>
                         <p>Share this code to play together:</p>
@@ -207,6 +218,41 @@ if (empty($game_id)) {
             <?php
             }
         ?>
+
+        <script>
+            let playerNum = <?php echo $player_num; ?>;
+            let isPlayerTurn = false;
+            let playerSymbol = '';
+            let currentTurn = -1;
+            let gameState = '---------';
+            let newGameState = gameState.split('');
+
+            console.log(gameState)
+
+            let cells = document.querySelectorAll('.cell');
+
+            cells.forEach(cell => {
+                cell.addEventListener('click', function() {
+                    if (!isPlayerTurn) return;
+                    
+                    console.log(cell.dataset.num)
+
+                    if (cell.innerHTML === "") {
+                        if (playerSymbol === "O") {
+                            cell.innerHTML = '<img src="./images/blue_circle.png" width="60" height="auto">'
+                            
+                        }
+                        else {
+                            cell.innerHTML = '<img src="./images/black_x.png" width="60" height="auto">'
+                        }
+
+                        // update game state
+                        newGameState[cell.dataset.num] = playerSymbol;
+                        console.log(newGameState.join(''));
+                    }
+                });
+            });
+        </script>
 
         <script>
             gameActive();
