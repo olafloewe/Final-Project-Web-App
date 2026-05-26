@@ -111,19 +111,27 @@ if (empty($game_id)) {
                 .then(data => data.symbol);
             }
 
+            function makeMove(current_turn) {
+                fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${current_turn}`)
+                .then(() => {
+                    console.log('done')
+                })
+            }
+
             function waitForTurn() {
                 fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>')
                 .then(response => response.json())
                 .then(data => {
-                    let playerNum = <?php echo $player_num; ?>
-                    //let currentTurn = data.current_turn; //this
-                    /*if (playerNum === currentTurn) {
-                        console.log(`Turn: ${playerNum}`);
-                    } else {
-                        console.log('not your turn');
+                    let playerNum = <?php echo $player_num; ?>;
+                    if (data.current_turn === playerNum) {
+                        console.log('your turn')
+                        makeMove(data.current_turn);
+                    }
+                    else {
+                        console.log('not your turn, retard')
                         setTimeout(waitForTurn, 2000);
-                    }*/
-                })
+                    }
+                });
             }
 
             function startGame() {
@@ -132,7 +140,11 @@ if (empty($game_id)) {
                 let playerSymbol = symbol;
                 fetch('set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=-1')
                 .then(() => {
-                    waitForTurn();
+                    for (let i = 0; i < 9; i++){
+                        waitForTurn();
+                    }
+                    
+                    
                 });
             });
         }
