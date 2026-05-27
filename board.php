@@ -50,7 +50,7 @@
 
         $current_turn = $data['current_turn'] ?? '';
 
-        if (empty(current_turn)) {
+        if (empty($current_turn)) {
             return set_current_turn($game_id, $current_turn);
         }
 
@@ -127,7 +127,43 @@ if (empty($game_id)) {
                 }) 
             }
 
-           async function madeMove() {
+            function setGameState() {
+                return new Promise(resolve => {
+                    fetch(`set_game_state.php?game_id=<?php echo $game_id; ?>&game_state=${gameState}`)
+                    .then(() => {
+                        console.log('new game state update');
+                        resolve(true);
+                    })
+                })
+            }
+
+            function updateBoardView() {
+                return new Promise(resolve => {
+                    cells.forEach(cell => {
+                        if (gameState[cell.dataset.num] === 'X') {
+                            cell.innerHTML = '<img src="./images/black_x.png" width="60" height="auto">';
+                        } else if (gameState[cell.dataset.num] === 'O') {
+                            cell.innerHTML = '<img src="./images/blue_circle.png" width="60" height="auto">';
+                        }
+                    });
+                    resolve(true);
+                })
+                
+            }
+
+            async function updateGameState() {
+                return new Promise(resolve => {
+                    fetch('get_game_state.php?game_id=<?php echo $game_id; ?>')
+                    .then(response => response.json())
+                    .then(data => {
+                        gameState = data.game_state;
+                        newGameState = gameState.split('');
+                        resolve(true);
+                    });
+                })
+            }
+
+            async function madeMove() {
                 while (gameState === newGameState.join('')) {
                     await new Promise(resolve => {
                         console.log('no move');
@@ -137,38 +173,52 @@ if (empty($game_id)) {
                 console.log('move');
                 isPlayerTurn = false;
                 gameState = newGameState.join('');
+                await setGameState();
             }
 
-            function waitForTurn() {
-                return new Promise(resolve => {
-                    fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>')
-                    .then(response => response.json())
-                    .then(data => {
-                        currentTurn = data.current_turn;
-                        if (currentTurn === playerNum) {
-                            console.log('your turn')
-                            isPlayerTurn = true;
-                            resolve(true);
-                        }
-                        else {
-                            console.log('not your turn')
-                            setTimeout(() => {
-                                waitForTurn()
-                                .then(resolve);  
-                            }, 2000);
-                        }
-                    });
+
+            async function waitForTurn() {
+                return new Promise(async(resolve) => {
+                    let response = await fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>');
+                    let data = await response.json();
+                    currentTurn = data.current_turn;
+
+                    if (currentTurn === playerNum) {
+                        console.log('your turn')
+
+                        await updateGameState();
+                        await updateBoardView();
+
+                        isPlayerTurn = true;
+                        resolve(true);
+                    } else {
+                        console.log('not your turn')
+                        setTimeout(() => {
+                            waitForTurn()
+                            .then(resolve);  
+                        }, 2000);
+                    }
                 })
             }
+
 
             async function game() {
                 enableBoard();
                 for(let i = 0; i < 9; i++) {
                     await waitForTurn();
                     console.log('wait')
+
                     await madeMove();
                     console.log('move');
                     await changePlayerTurn();
+
+                    
+                    fetch('get_game_state.php?game_id=<?php echo $game_id; ?>')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.game_state)
+                    })
+                  
                 }
             }
 
