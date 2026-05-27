@@ -174,8 +174,62 @@ if (empty($game_id)) {
                 isPlayerTurn = false;
                 gameState = newGameState.join('');
                 await setGameState();
+                await checkForWinner();
             }
 
+            function setWinner() {
+                return new Promise(resolve => {
+                    fetch(`set_winner.php?game_id=<?php echo $game_id; ?>&winner=${playerNum}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        winner = data.winner;
+                        console.log(`the winner is: ${winner}`);
+                        resolve(true);
+                    })
+                })
+            }
+
+            function getWinner() {
+                return new Promise(resolve => {
+                    fetch('get_winner.php?game_id=<?php echo $game_id; ?>')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.winner);
+                        winner = data.winner;
+                        resolve(true);
+                    });
+                }) 
+            }
+
+            function checkForWinner() {
+                return new Promise(async(resolve) => {
+
+                    // check whether player won by filling a row
+                    for (let i = 0; i <= 6; i += 3) {
+                        if (newGameState[i] === playerSymbol && newGameState[i + 1] === playerSymbol && newGameState[i + 2] === playerSymbol) {
+                            setWinner();
+                        }
+                    }
+
+                    // check whether player won by filling column
+                    for (let i = 0; i <= 2; i++) {
+                        if (newGameState[i] === playerSymbol && newGameState[i + 3] === playerSymbol && newGameState[i + 6] === playerSymbol) {
+                            setWinner();
+                        }
+                    }
+
+                    // check whether player won by filling the spaces across the board
+                    let dif = 4; 
+                    for (let i = 0; i <= 2; i += 2) //"Checking if X or O won by filling the spaces across"
+                    {
+                        if (newGameState[i] === playerSymbol && newGameState[i + dif] === playerSymbol && newGameState[i + 2 * dif] === playerSymbol) {
+                            setWinner();
+                        }
+                        dif = 2;
+                    }
+                    resolve(true);
+                })
+            }
 
             async function waitForTurn() {
                 return new Promise(async(resolve) => {
@@ -184,11 +238,15 @@ if (empty($game_id)) {
                     currentTurn = data.current_turn;
 
                     if (currentTurn === playerNum) {
-                        console.log('your turn')
-
+                        await getWinner();
+                        if (winner !== -1) {
+                            resolve('exit');
+                        }
+                        
                         await updateGameState();
                         await updateBoardView();
-
+                        
+                        console.log('your turn')
                         isPlayerTurn = true;
                         resolve(true);
                     } else {
@@ -204,11 +262,16 @@ if (empty($game_id)) {
 
             async function game() {
                 enableBoard();
+
+                let exit = false;
                 for(let i = 0; i < 9; i++) {
-                    await waitForTurn();
+                    let result = await waitForTurn();
+                    if (result === 'exit') exit = true;
                     console.log('wait')
 
                     await madeMove();
+                    if (winner !== -1) exit = true;
+
                     console.log('move');
                     await changePlayerTurn();
 
@@ -274,6 +337,7 @@ if (empty($game_id)) {
             let isPlayerTurn = false;
             let playerSymbol = '';
             let currentTurn = -1;
+            let winner = -1;
             let gameState = '---------';
             let newGameState = gameState.split('');
 
