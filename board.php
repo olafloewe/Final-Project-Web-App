@@ -179,14 +179,14 @@ if (empty($game_id)) {
 
             function setWinner() {
                 return new Promise(resolve => {
-                    fetch(`set_winner.php?game_id=<?php echo $game_id; ?>&winner=${playerNum}`)
+                    fetch(`set_winner.php?game_id=${gameId}&winner=${userId}`)
                     .then(response => response.json())
                     .then(data => {
                         winner = data.winner;
-                        console.log(`the winner is: ${winner}`);
+                        console.log(`Winner: ${winner}`);
                         resolve(true);
                     })
-                })
+                }) 
             }
 
             function getWinner() {
@@ -264,13 +264,13 @@ if (empty($game_id)) {
                 enableBoard();
 
                 let exit = false;
-                for(let i = 0; i < 9; i++) {
+                while (!exit) {
                     let result = await waitForTurn();
-                    if (result === 'exit') exit = true;
+                    if (result === 'exit') break;
                     console.log('wait')
 
                     await madeMove();
-                    if (winner !== -1) exit = true;
+                    if (winner !== -1) break;
 
                     console.log('move');
                     await changePlayerTurn();
@@ -281,8 +281,13 @@ if (empty($game_id)) {
                     .then(data => {
                         console.log(data.game_state)
                     })
-                  
                 }
+
+                finishGame();
+            }
+
+            function finishGame() {
+                document.getElementById('winner-message').innerHTML = `The winnner is ${winner}`;
             }
 
             function startGame() {
@@ -298,6 +303,7 @@ if (empty($game_id)) {
     </head>
 
     <body>
+        <div class="message" id="winner-message"></div>
         <div class="message" id="wait-message"></div>
         <div id="board">
             <div class="cell" data-num ="0"></div>
@@ -333,6 +339,8 @@ if (empty($game_id)) {
         ?>
 
         <script>
+            let gameId = <?php echo $game_id; ?>;
+            let userId = <?php echo $user_id; ?>;
             let playerNum = <?php echo $player_num; ?>;
             let isPlayerTurn = false;
             let playerSymbol = '';
@@ -347,7 +355,7 @@ if (empty($game_id)) {
 
             cells.forEach(cell => {
                 cell.addEventListener('click', function() {
-                    if (!isPlayerTurn) return;
+                    if (!isPlayerTurn || winner != -1) return;
                     
                     console.log(cell.dataset.num)
 
