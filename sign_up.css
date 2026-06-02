@@ -1,13 +1,236 @@
-#sign_up_form {
+/* ==========================================================================
+   1. COLOR PALETTE VARIABLES
+   ========================================================================== */
+:root {
+    --dark-teal: #469b9b;
+    --medium-teal: #5bb5b5;
+    --main-teal: #7bc4c4;
+    --light-teal: #8edbdb;
+    --pale-teal: #afebeb;
+}
+
+/* ==========================================================================
+   2. GLOBAL BODY & BACKGROUND SETTINGS
+   ========================================================================== */
+body {
+    background: radial-gradient(circle, var(--light-teal) 0%, var(--medium-teal) 50%, var(--dark-teal) 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
     display: flex;
-    width: 20%;
-    height: 65vh;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    background-color: #dfbedf;
-    padding: 20px;
-    border: 2px solid rgb(128, 3, 128);
-    border-radius: 10px;
-    box-shadow: 5px 5px 15px 5px #FFFFFF;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* ==========================================================================
+   3. EXPANDABLE SIGN UP BOX STYLING
+   ========================================================================== */
+.container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 360px;
+    min-height: auto; 
+    padding: 24px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    z-index: 10; 
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    color: var(--dark-teal);
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+input {
+    padding: 12px;
+    margin-top: 4px;     
+    margin-bottom: 8px;  
+    border: 2px solid var(--light-teal);
+    border-radius: 6px;
+    background-color: #f9ffff;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--medium-teal);
+}
+
+/* ==========================================================================
+   4. COLLAPSIBLE JAVASCRIPT ERROR HANDLING
+   ========================================================================== */
+.error {
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+}
+
+.error p {
+    margin: 2px 0 10px 0 !important; 
+    padding: 8px 12px;
+    background-color: #fff2f2;
+    color: #d32f2f !important;
+    border: 1px solid #ffcfcf;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.3;
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   5. ACTION BUTTONS
+   ========================================================================== */
+button[type="button"] {
+    background-color: var(--dark-teal);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 14px; 
+    transition: transform 0.1s, background 0.3s;
+    width: 100%;
+}
+
+button[type="button"]:hover {
+    background-color: var(--medium-teal);
+}
+
+button[type="button"]:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   6. CORRECTED LINE-DRAWING GRID BACKDROP ANIMATION
+   ========================================================================== */
+.bg-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.grid-board {
+    position: absolute;
+    opacity: 0.25; 
+}
+
+/* Framework Dimensions */
+.main-grid {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+}
+
+.mini-grid {
+    width: 200px;
+    height: 200px;
+}
+
+.top-left { top: 8%; left: 6%; transform: rotate(-12deg); }
+.bottom-right { bottom: 8%; right: 6%; transform: rotate(18deg); }
+
+/* Common setup for all vector lines */
+.line {
+    position: absolute;
+    background-color: var(--pale-teal);
+    border-radius: 4px;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+    animation-duration: 8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+/* --- GRID MATRIX POSITIONING COLS/ROWS --- */
+
+.horizontal {
+    left: 0;
+    height: 6px; /* Explicit line thinness */
+    width: 0;    /* Starts at zero width */
+    animation-name: drawHorizontalLine;
+}
+.h1 { top: 33.33%; animation-delay: 0.0s; }
+.h2 { top: 66.66%; animation-delay: 1.0s; }
+
+.vertical {
+    top: 0;
+    width: 6px;  /* Explicit line thinness */
+    height: 0;   /* Starts at zero height */
+    animation-name: drawVerticalLine;
+}
+.v1 { left: 33.33%; animation-delay: 0.5s; }
+.v2 { left: 66.66%; animation-delay: 1.5s; }
+
+
+/* --- THE LINE DRAWING CONTROLLERS --- */
+
+/* Horizontal Animation Sequence: Scales width only, holds height flat */
+@keyframes drawHorizontalLine {
+    0% { 
+        width: 0; 
+        opacity: 0; 
+        background-color: #000;
+    }
+    10% { 
+        opacity: 1; 
+        background-color: var(--dark-teal); 
+    }
+    20%, 75% { 
+        width: 100%; 
+        opacity: 1;
+        background-color: var(--pale-teal);
+    }
+    90%, 100% { 
+        width: 100%; 
+        opacity: 0; 
+    }
+}
+
+/* Vertical Animation Sequence: Scales height only, holds width flat */
+@keyframes drawVerticalLine {
+    0% { 
+        height: 0; 
+        opacity: 0; 
+        background-color: #000;
+    }
+    10% { 
+        opacity: 1; 
+        background-color: var(--dark-teal); 
+    }
+    20%, 75% { 
+        height: 100%; 
+        opacity: 1;
+        background-color: var(--pale-teal);
+    }
+    90%, 100% { 
+        height: 100%; 
+        opacity: 0; 
+    }
 }

@@ -1,125 +1,269 @@
-/* login.css */
-
-.container#login_form {
-  background: var(--color-bg, #fff);
-  border: 0.5px solid rgba(0,0,0,0.12);
-  border-radius: 12px;
-  padding: 2.5rem 2rem 2rem;
-  width: 100%;
-  max-width: 360px;
-  margin: 4rem auto;
-  box-sizing: border-box;
-  font-family: system-ui, sans-serif;
+/* ==========================================================================
+   1. COLOR PALETTE VARIABLES
+   ========================================================================== */
+:root {
+    --dark-teal: #469b9b;
+    --medium-teal: #5bb5b5;
+    --main-teal: #7bc4c4;
+    --light-teal: #8edbdb;
+    --pale-teal: #afebeb;
 }
 
-.container#login_form h1 {
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-align: center;
-  margin: 0 0 1.75rem;
-  color: #111;
+/* ==========================================================================
+   2. GLOBAL BODY & BACKGROUND SETTINGS
+   ========================================================================== */
+body {
+    background: radial-gradient(circle, var(--light-teal) 0%, var(--medium-teal) 50%, var(--dark-teal) 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
 }
 
-/* success message */
-.container#login_form p[style*="white"] {
-  background: #eaf3de;
-  border: 0.5px solid #639922;
-  border-radius: 8px;
-  color: #3b6d11 !important;
-  font-size: 13px;
-  padding: 10px 14px;
-  text-align: center;
-  margin-bottom: 1.25rem;
+/* ==========================================================================
+   3. LOGIN CONTAINER STYLING
+   ========================================================================== */
+.container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 360px; 
+    min-height: 400px; 
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative; 
+    z-index: 10; /* Keeps the login box strictly above the moving tokens */
 }
 
-/* floating label wrapper */
-.container#login_form form {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+h1 {
+    color: var(--dark-teal);
+    text-align: center;
+    font-size: 1.8rem;
+    margin: 0 0 20px 0;
+    letter-spacing: 2px;
 }
 
-.container#login_form label {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.03em;
-  color: #666;
-  margin-bottom: 4px;
-  margin-top: 1rem;
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; 
 }
 
-.container#login_form label:first-child {
-  margin-top: 0;
+label {
+    color: var(--dark-teal);
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
-.container#login_form input[type="text"],
-.container#login_form input[type="password"] {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 11px 14px;
-  font-size: 15px;
-  background: #f5f5f3;
-  border: 0.5px solid rgba(0,0,0,0.2);
-  border-radius: 8px;
-  color: #111;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+input {
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 2px solid var(--light-teal);
+    border-radius: 6px;
+    background-color: #f9ffff;
+    font-size: 1rem;
+    transition: border-color 0.3s;
 }
 
-.container#login_form input:focus {
-  border-color: rgba(0,0,0,0.4);
-  box-shadow: 0 0 0 3px rgba(127,119,221,0.15);
+input:focus {
+    outline: none;
+    border-color: var(--medium-teal);
 }
 
-/* error message */
-.container#login_form p[style*="red"] {
-  font-size: 12px;
-  color: #a32d2d !important;
-  margin: 6px 0 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+/* ==========================================================================
+   4. ERROR / SUCCESS MESSAGES
+   ========================================================================== */
+.msg-box {
+    padding: 8px 12px; 
+    margin: 0 0 15px 0; 
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.4;
 }
 
-/* submit button */
-.container#login_form button[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  margin-top: 1.25rem;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  background: #fff;
-  border: 0.5px solid rgba(0,0,0,0.25);
-  border-radius: 8px;
-  cursor: pointer;
-  color: #111;
-  transition: background 0.15s, transform 0.1s;
+.msg-error {
+    background-color: #fff2f2;
+    color: #d32f2f;
+    border: 1px solid #ffcfcf;
 }
 
-.container#login_form button[type="submit"]:hover {
-  background: #f5f5f3;
+.msg-success {
+    background-color: var(--pale-teal);
+    color: #2d6666;
+    border: 1px solid var(--main-teal);
 }
 
-.container#login_form button[type="submit"]:active {
-  transform: scale(0.98);
+/* ==========================================================================
+   5. BUTTON STYLING
+   ========================================================================== */
+button[type="submit"] {
+    background-color: var(--dark-teal);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: transform 0.1s, background 0.3s;
 }
 
-/* sign up section */
+button[type="submit"]:hover {
+    background-color: var(--medium-teal);
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   6. SIGN UP BOTTOM LINK
+   ========================================================================== */
 #sign_up {
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: 13px;
-  color: #666;
-}
-
-#sign_up p {
-  margin: 0 0 4px;
+    text-align: center;
+    margin-top: auto; 
+    padding-top: 20px;
+    font-size: 0.9rem;
+    color: var(--dark-teal); 
 }
 
 #sign_up a {
-  color: #111;
-  text-decoration: underline;
+    color: var(--dark-teal); 
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+#sign_up a:hover {
+    color: var(--medium-teal); 
+    text-decoration: underline;
+}
+
+#sign_up p {
+    color: black; 
+}
+
+/* ==========================================================================
+   7. ENHANCED MULTI-BOARD TIC-TAC-TOE BACKGROUND ANIMATION
+   ========================================================================== */
+.bg-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Sits underneath the main container box */
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.tic-tac-toe-bg {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 15px;
+    opacity: 0.35; 
+}
+
+/* Board Positions & Dynamic Scale Sizes */
+.main-board {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 650px; 
+    height: 650px;
+}
+
+.mini-board {
+    width: 250px;
+    height: 250px;
+}
+
+.top-left { top: 5%; left: 5%; transform: rotate(-15deg); }
+.bottom-right { bottom: 5%; right: 5%; transform: rotate(15deg); }
+
+.cell {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Vector Dropshadow Mix */
+.cell.x::before, .cell.x::after, .cell.o::before {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+/* Drawing X Pieces */
+.cell.x::before, .cell.x::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 75px;
+    background-color: var(--pale-teal);
+    border-radius: 5px;
+    opacity: 0;
+}
+
+/* Drawing O Pieces */
+.cell.o::before {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 12px solid var(--pale-teal);
+    border-radius: 50%;
+    opacity: 0;
+    box-sizing: border-box;
+}
+
+/* Global Loop Timers */
+.cell::before, .cell::after {
+    animation: tokenLifeCycle 9s infinite ease-in-out;
+    animation-fill-mode: forwards;
+    opacity: 0;
+}
+
+/* Turn Sequence Delay Schedule */
+.token-1::before, .token-1::after { animation-delay: 0.5s; }
+.token-2::before, .token-2::after { animation-delay: 1.5s; }
+.token-3::before, .token-3::after { animation-delay: 2.5s; }
+.token-4::before, .token-4::after { animation-delay: 3.5s; }
+.token-5::before, .token-5::after { animation-delay: 4.5s; }
+.token-6::before, .token-6::after { animation-delay: 5.5s; }
+
+/* Structural Rotation Positions */
+.cell.x::before { transform: rotate(45deg); }
+.cell.x::after { transform: rotate(-45deg); }
+
+/* Animation Keyframes: Global Life Cycle */
+@keyframes tokenLifeCycle {
+    0% { opacity: 0; transform: scale(0.5); background-color: #000; border-color: #000; }
+    15% { opacity: 1; transform: scale(1.1); background-color: var(--dark-teal); border-color: var(--dark-teal); }
+    30%, 70% { opacity: 1; transform: scale(1); background-color: var(--main-teal); border-color: var(--main-teal); }
+    85% { opacity: 1; transform: scale(1); background-color: var(--light-teal); border-color: var(--light-teal); }
+    95%, 100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* Custom Animation Override to preserve X-Axis diagonal alignment during loop */
+@keyframes xBarFix {
+    0% { opacity: 0; transform: scale(0.5) rotate(-45deg); }
+    15% { opacity: 1; transform: scale(1.1) rotate(-45deg); }
+    30%, 85% { opacity: 1; transform: scale(1) rotate(-45deg); }
+    95%, 100% { opacity: 0; }
+}
+
+.cell.x::after {
+    animation-name: xBarFix;
 }
