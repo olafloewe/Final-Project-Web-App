@@ -92,10 +92,10 @@ if (empty($game_id)) {
             }
             
             function enableBoard() {
-                cells.forEach(cell => {
+                cells.forEach(cell => { 
                     cell.classList.add('show');
                 })
-            }
+            }    
 
             function gameActive() {
                 fetch('check_game_status.php?game_id=<?php echo $game_id; ?>')
