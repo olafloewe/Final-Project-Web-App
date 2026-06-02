@@ -39,7 +39,7 @@ body {
     flex-direction: column;
     box-sizing: border-box;
     position: relative; 
-    z-index: 10; /* Keeps the login box strictly above the moving tokens */
+    z-index: 10; 
 }
 
 h1 {
@@ -154,7 +154,7 @@ button[type="submit"]:active {
 }
 
 /* ==========================================================================
-   7. ENHANCED MULTI-BOARD TIC-TAC-TOE BACKGROUND ANIMATION
+   7. TIC-TAC-TOE BACKGROUND ANIMATION (WHITE-TO-DARK COLOR CYCLE)
    ========================================================================== */
 .bg-wrapper {
     position: fixed;
@@ -162,7 +162,7 @@ button[type="submit"]:active {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1; /* Sits underneath the main container box */
+    z-index: 1; 
     pointer-events: none;
     overflow: hidden;
 }
@@ -176,7 +176,7 @@ button[type="submit"]:active {
     opacity: 0.35; 
 }
 
-/* Board Positions & Dynamic Scale Sizes */
+/* Board Positions & Scale Dimensions */
 .main-board {
     top: 50%;
     left: 50%;
@@ -200,42 +200,46 @@ button[type="submit"]:active {
     align-items: center;
 }
 
-/* Vector Dropshadow Mix */
+/* Soft vector blend drop-shadow */
 .cell.x::before, .cell.x::after, .cell.o::before {
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.25));
 }
 
-/* Drawing X Pieces */
+/* Symmetrical X Baseline Shape */
 .cell.x::before, .cell.x::after {
     content: '';
     position: absolute;
     width: 12px;
     height: 75px;
-    background-color: var(--pale-teal);
-    border-radius: 5px;
+    background-color: transparent;
+    border-radius: 6px;
     opacity: 0;
+    top: calc(50% - 37.5px); 
+    left: calc(50% - 6px);
 }
 
-/* Drawing O Pieces */
+/* Hollow O Baseline Shape */
 .cell.o::before {
     content: '';
     position: absolute;
     width: 60px;
     height: 60px;
-    border: 12px solid var(--pale-teal);
+    border: 12px solid transparent; 
+    background-color: transparent !important; 
     border-radius: 50%;
     opacity: 0;
     box-sizing: border-box;
 }
 
-/* Global Loop Timers */
+/* Global Loop Configuration */
 .cell::before, .cell::after {
-    animation: tokenLifeCycle 9s infinite ease-in-out;
+    animation-duration: 9s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
     animation-fill-mode: forwards;
-    opacity: 0;
 }
 
-/* Turn Sequence Delay Schedule */
+/* Turn Delay Map */
 .token-1::before, .token-1::after { animation-delay: 0.5s; }
 .token-2::before, .token-2::after { animation-delay: 1.5s; }
 .token-3::before, .token-3::after { animation-delay: 2.5s; }
@@ -243,27 +247,42 @@ button[type="submit"]:active {
 .token-5::before, .token-5::after { animation-delay: 4.5s; }
 .token-6::before, .token-6::after { animation-delay: 5.5s; }
 
-/* Structural Rotation Positions */
-.cell.x::before { transform: rotate(45deg); }
-.cell.x::after { transform: rotate(-45deg); }
+/* Apply individual transformation tracks */
+.cell.x::before { animation-name: animateXLine1; }
+.cell.x::after  { animation-name: animateXLine2; }
+.cell.o::before { animation-name: animateCircleRing; }
 
-/* Animation Keyframes: Global Life Cycle */
-@keyframes tokenLifeCycle {
-    0% { opacity: 0; transform: scale(0.5); background-color: #000; border-color: #000; }
-    15% { opacity: 1; transform: scale(1.1); background-color: var(--dark-teal); border-color: var(--dark-teal); }
-    30%, 70% { opacity: 1; transform: scale(1); background-color: var(--main-teal); border-color: var(--main-teal); }
-    85% { opacity: 1; transform: scale(1); background-color: var(--light-teal); border-color: var(--light-teal); }
+
+/* ==========================================================================
+   8. WHITE TO DARK TRANSITION KEYFRAMES
+   ========================================================================== */
+
+/* Left-to-Right diagonal line of X */
+@keyframes animateXLine1 {
+    0% { opacity: 0; transform: scale(0.5) rotate(45deg); background-color: #ffffff; }
+    15% { opacity: 1; transform: scale(1.1) rotate(45deg); background-color: #ffffff; } /* Bright white entry pop */
+    30% { opacity: 1; transform: scale(1) rotate(45deg); background-color: var(--light-teal); }
+    50%, 70% { opacity: 1; transform: scale(1) rotate(45deg); background-color: var(--main-teal); } /* Aging state */
+    85% { opacity: 1; transform: scale(1) rotate(45deg); background-color: var(--dark-teal); } /* Deep integration state */
+    95%, 100% { opacity: 0; transform: scale(0.8) rotate(45deg); }
+}
+
+/* Right-to-Left diagonal line of X */
+@keyframes animateXLine2 {
+    0% { opacity: 0; transform: scale(0.5) rotate(-45deg); background-color: #ffffff; }
+    15% { opacity: 1; transform: scale(1.1) rotate(-45deg); background-color: #ffffff; }
+    30% { opacity: 1; transform: scale(1) rotate(-45deg); background-color: var(--light-teal); }
+    50%, 70% { opacity: 1; transform: scale(1) rotate(-45deg); background-color: var(--main-teal); }
+    85% { opacity: 1; transform: scale(1) rotate(-45deg); background-color: var(--dark-teal); }
+    95%, 100% { opacity: 0; transform: scale(0.8) rotate(-45deg); }
+}
+
+/* Circle Ring Animation */
+@keyframes animateCircleRing {
+    0% { opacity: 0; transform: scale(0.5); border-color: #ffffff; }
+    15% { opacity: 1; transform: scale(1.1); border-color: #ffffff; }
+    30% { opacity: 1; transform: scale(1); border-color: var(--light-teal); }
+    50%, 70% { opacity: 1; transform: scale(1); border-color: var(--main-teal); }
+    85% { opacity: 1; transform: scale(1); border-color: var(--dark-teal); }
     95%, 100% { opacity: 0; transform: scale(0.8); }
-}
-
-/* Custom Animation Override to preserve X-Axis diagonal alignment during loop */
-@keyframes xBarFix {
-    0% { opacity: 0; transform: scale(0.5) rotate(-45deg); }
-    15% { opacity: 1; transform: scale(1.1) rotate(-45deg); }
-    30%, 85% { opacity: 1; transform: scale(1) rotate(-45deg); }
-    95%, 100% { opacity: 0; }
-}
-
-.cell.x::after {
-    animation-name: xBarFix;
 }
