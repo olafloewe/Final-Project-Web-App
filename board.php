@@ -301,9 +301,7 @@ if (empty($game_id)) {
 
     <body>
         <div class="message" id="winner-message"></div>
-        <div class="message" id="wait-message">
-            <p>Waiting for other player to join...</p>
-        </div>
+        <div class="message" id="wait-message"></div>
 
         <div id="board">
             <div class="cell" data-num ="0"></div>
@@ -320,7 +318,7 @@ if (empty($game_id)) {
         <?php
             if (get_game_status($game_id) === 1) { ?>
                 <script>
-                   // document.getElementById('wait-message').classList.add('show');
+                   document.getElementById('wait-message').innerHTML = "<p>Waiting for other players</p>";
                 </script>
 
                 <div id="modal_container" class="modal_container show">
