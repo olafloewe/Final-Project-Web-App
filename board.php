@@ -97,7 +97,7 @@ if (empty($game_id)) {
                 })
             }    
 
-            function gameActive() {
+            function gameActive() {    
                 fetch('check_game_status.php?game_id=<?php echo $game_id; ?>')
                 .then(response => response.json())
                 .then(data => {
