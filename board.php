@@ -66,8 +66,6 @@ $game_code = $_SESSION['game_code'] ?? "";
 $user_id = $_SESSION['user_id'] ?? "";
 $player_num = $_SESSION['player_num'] ?? "";
 
-echo($game_id);
-
 if (empty($game_id)) {
     header("Location: login.php");
     exit();
@@ -236,13 +234,13 @@ if (empty($game_id)) {
                     let response = await fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>');
                     let data = await response.json();
                     currentTurn = data.current_turn;
+                    
+                    await getWinner();
+                    if (winner !== -1) {
+                        resolve('exit');
+                    }
 
                     if (currentTurn === playerNum) {
-                        await getWinner();
-                        if (winner !== -1) {
-                            resolve('exit');
-                        }
-                        
                         await updateGameState();
                         await updateBoardView();
                         
@@ -274,7 +272,6 @@ if (empty($game_id)) {
 
                     console.log('move');
                     await changePlayerTurn();
-
                     
                     fetch('get_game_state.php?game_id=<?php echo $game_id; ?>')
                     .then(response => response.json())
@@ -304,7 +301,10 @@ if (empty($game_id)) {
 
     <body>
         <div class="message" id="winner-message"></div>
-        <div class="message" id="wait-message"></div>
+        <div class="message" id="wait-message">
+            <p>Waiting for other player to join...</p>
+        </div>
+
         <div id="board">
             <div class="cell" data-num ="0"></div>
             <div class="cell" data-num ="1"></div>
@@ -320,7 +320,7 @@ if (empty($game_id)) {
         <?php
             if (get_game_status($game_id) === 1) { ?>
                 <script>
-                    document.getElementById('wait-message').innerHTML = "<p>Waiting for other player to join...</p>";
+                   // document.getElementById('wait-message').classList.add('show');
                 </script>
 
                 <div id="modal_container" class="modal_container show">
