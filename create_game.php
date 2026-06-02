@@ -14,7 +14,7 @@ function is_unique_code(string $game_code) : bool {
 
     if ($stmt->rowCount() === 0) return TRUE;
     return FALSE;
-}
+}        
 
 session_start();
 include('db_credentials.php');
