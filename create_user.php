@@ -9,6 +9,7 @@ $password = $_POST['password'];
 // hash password using bcrypt
 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
+// SQL query to insert new user into database
 $sql = "
     INSERT INTO users (username, password)
     VALUES (:username, :password)
