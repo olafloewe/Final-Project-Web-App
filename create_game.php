@@ -22,6 +22,7 @@ function is_unique_code(string $game_code) : bool {
 }
 
 session_start();
+// login to database
 include('db_credentials.php');
 
 // check for user id else redirect to login page

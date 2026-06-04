@@ -1,5 +1,6 @@
 <?php
 session_start();
+// login to database
 include('db_credentials.php');
 
 // data sent by user in form

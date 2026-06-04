@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+// check for error message
 $error_message = $_SESSION['code_error'] ?? "";
 
+// unset error message if it exists
 if (!empty($error_message)) unset($_SESSION['code_error']);
 ?>
 
@@ -13,7 +15,9 @@ if (!empty($error_message)) unset($_SESSION['code_error']);
         <link rel="stylesheet" href="menu.css">
         <title>Menu</title>
 
+
         <script>
+            // functions to open and close the join game modal
             function closeModal() {
                 document.getElementById('modal_container').classList.remove('show-modal');
             }
@@ -22,6 +26,7 @@ if (!empty($error_message)) unset($_SESSION['code_error']);
                 document.getElementById('modal_container').classList.add('show-modal');
             }
 
+            // error checking
             function checkForErrors(event) {
                 event.preventDefault(); 
                 let codeErrorDiv = document.getElementById('game_code_error');
@@ -69,6 +74,7 @@ if (!empty($error_message)) unset($_SESSION['code_error']);
         </div>
 
         <script>
+            // check for errors in the game code input and display error message if necessary
             document.getElementById('game_code').addEventListener('input', function() {
                 this.value = this.value.toUpperCase();
 
