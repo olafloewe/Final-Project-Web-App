@@ -1,4 +1,5 @@
 <?php
+// database credentials to connect to database using PDO
 $db_host = 'localhost';
 $db_name = 'prestashop_pzx124573'; 
 $db_user = 'pzx124573';     

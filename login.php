@@ -4,11 +4,13 @@ session_start();
 // check for error message
 $error_message = $_SESSION['login_error'] ?? "";
 
+// unset error message if it exists
 if (!empty($error_message)) unset($_SESSION['login_error']);
 
 // check for successful sign up message
 $sign_up_message = $_SESSION['sign_up_message'] ?? "";
 
+// unset successful sign up message if it exists
 if (!empty($sign_up_message)) unset($_SESSION['sign_up_message']);
 ?>
 
@@ -24,6 +26,7 @@ if (!empty($sign_up_message)) unset($_SESSION['sign_up_message']);
             <h1>LOGIN</h1>
             
             <?php
+                // display successful sign up message if it exists
                 if ($sign_up_message) {
                     echo '<p style="color: white;">The sign up was successful!<br>Please login below</p>';
                 }
@@ -38,6 +41,7 @@ if (!empty($sign_up_message)) unset($_SESSION['sign_up_message']);
                 <input type="password" id="password" name="password" required>
 
                 <?php
+                    // display error message if it exists
                     if ($error_message) {
                         echo '<p style="color: red;">Incorrect username or password!</p>';
                     }

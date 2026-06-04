@@ -12,37 +12,40 @@ function throw_login_error() {
 }
 
 session_start();
+// login to database
 include('db_credentials.php');
 
 // data sent by user in form
 $username = $_POST['username'];
 $password = $_POST['password'];
 
-// query to get the user info
+// SQL query to get user record from database
 $sql = "
     SELECT user_id, username, password, is_admin FROM users WHERE username = :username
 ";
 
-// prepare query to avoid SQL injection
+// prepare and execute SQL with injection protection
 $stmt = $pdo->prepare($sql);
-
-// put username into the variable
 $stmt->bindValue(':username', $username, PDO::PARAM_STR);
-
 $stmt->execute();
 
-// check whether such a username does not exist
+// check if username exists else return error
 if ($stmt->rowCount() === 0) throw_login_error();
 
 // fetch record
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// verify password
 $hashed_password = $data['password'];
 if (password_verify($password, $hashed_password)) {
+    // set session variables and redirect to menu
     $_SESSION['user_id'] = $data['user_id'];
     $_SESSION['username'] = $data['username']; 
     $_SESSION['isAdmin'] = $data['is_admin'];
     header("Location: menu.php");
     exit;
-} else throw_login_error();
+} else {
+    // throw error if password is incorrect
+    throw_login_error();
+}
 ?>
