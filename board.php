@@ -97,7 +97,7 @@ if (empty($game_id)) {
 <!DOCTYPE html>
 <html>
     <head>
-        // link stylesheets and set title
+        <!-- link stylesheets and set title -->
         <link rel="stylesheet" href="general_page_settings.css">
         <link rel="stylesheet" href="board.css">
         <title>Tic-Tac-Toe</title>

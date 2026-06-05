@@ -13,7 +13,7 @@ FEATURES:
 	- running games list
 	- match history (finished games)
 - add error-handling
-- add leaderboard in menu
+
 
 - profile icon in the menu and board page (?)
 
@@ -25,3 +25,4 @@ FORMATING:
 = = = = = = = = = = = = = = = = = = VAULT = = = = = = = = = = = = = = = = = = 
 
 - game result pop up restart button
+- add leaderboard in menu
