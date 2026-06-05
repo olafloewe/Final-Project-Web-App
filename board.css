@@ -141,3 +141,18 @@ button {
 #result-close-btn:hover {
   background: #1d4ed8;
 }
+
+#result-menu-btn {
+  background: #fff;
+  color: #2563eb;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+#result-menu-btn:hover {
+  background: #eff6ff;
+}

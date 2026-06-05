@@ -402,14 +402,17 @@ if (empty($game_id)) {
         <div class="message" id="wait-message"></div>
 
         <div id="result-modal-overlay">
-        <div id="result-modal">
-            <div id="result-icon"></div>
-            <h2 id="result-title"></h2>
-            <p  id="result-subtitle"></p>
-            <button id="result-close-btn" onclick="document.getElementById('result-modal-overlay').classList.remove('show')">
-            Close
-            </button>
-        </div>
+            <div id="result-modal">
+                <div id="result-icon"></div>
+                <h2 id="result-title"></h2>
+                <p  id="result-subtitle"></p>
+                <button id="result-close-btn" onclick="document.getElementById('result-modal-overlay').classList.remove('show')">
+                Close
+                </button>
+                <button id="result-menu-btn" onclick="window.location.href='menu.php'">
+                Main Menu
+                </button>
+            </div>
         </div>
 
         <div id="board">

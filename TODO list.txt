@@ -1,0 +1,22 @@
+TODO:
+
+FEATURES:
+- add error-handling
+- add leaderboard
+- join random game
+- profile icon in the menu and board page
+- in profile, the possibility to see their ongoing games and finished ones
+
+FORMATING:
+- seperate html, php, js in seperate files
+- change underscores to hivens in html and css. Html names are also used in php sometimes so be careful to check it
+- integrate css
+
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+
+DONE:
+- make the game detect tie
+- make a module that shows the winner
+
+VAULT:
+- in the tie/winner module add possibility to restart game or come back to the menu
