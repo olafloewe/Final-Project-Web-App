@@ -306,7 +306,7 @@ if (empty($game_id)) {
                     await updateBoardView();
                     
                     // check for winner and end game if there is one
-                    console.log(`Winner: {winner}`);
+                    console.log(`Winner: ${winner}`);
                     await getWinner();
                     if (winner !== -1) {
                         resolve('exit');
@@ -316,8 +316,8 @@ if (empty($game_id)) {
                     // "my turn" update game state, view and board, else wait 2 seconds and poll again
                     if (currentTurn === playerNum) {
                         console.log('your turn')
-                        isPlayerTurn = true;
-                        resolve(true);
+                        isPlayerTurn = true;    
+                        resolve(true);     
                     } else {
                         console.log('not your turn')
                         setTimeout(() => {
