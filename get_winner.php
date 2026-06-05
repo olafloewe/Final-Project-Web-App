@@ -23,17 +23,17 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($data['winner'] !== null) {
     // translate user_id back to player number
     if ((int)$data['winner'] === (int)$data['player_one']) {
-        $winner = 1;
+        $result = 1;
     } else {
-        $winner = 2;
+        $result = 2;
     }
 } elseif ((int)$data['game_status'] === 3) {
-    $winner = 0;  // tie
+    $result = 0; // tie
 } else {
-    $winner = -1; // game still in progress (null in database)
+    $result = -1; // game still in progress
 }
 
 // return winner as int json
 header('Content-Type: application/json');
-echo json_encode(['winner' => $winner]);
+echo json_encode(['winner' => $result]);
 ?>

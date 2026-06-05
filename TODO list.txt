@@ -9,7 +9,7 @@ FEATURES:
 - join random game
 	- create private game
 	- create public game
-- profile (stats: wr, games played etc.)
+- profile (stats: winrate, games played etc.)
 	- running games list
 	- match history (finished games)
 - add error-handling
@@ -17,7 +17,7 @@ FEATURES:
 
 FORMATING:
 - seperate html, php, js in seperate files
-- change underscores to hivens in html and css. Html names are also used in php sometimes so be careful to check it
+- change underscores to hiphens in html and css. Html names are used in php sometimes 
 - integrate css
 
 = = = = = = = = = = = = = = = = = = VAULT = = = = = = = = = = = = = = = = = = 
