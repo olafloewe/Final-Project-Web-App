@@ -210,14 +210,12 @@ if (empty($game_id)) {
 
             // save the winning player to the database and return it
             function setWinner() {
-                return new Promise(resolve => {
-                    fetch(`set_winner.php?game_id=${gameId}&winner=${userId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            winner = data.winner;
-                            console.log(`Winner: Player ${winner}`);
-                            resolve(true);
-                        });
+                return new Promise(async(resolve) => {
+                    let response = await fetch(`set_winner.php?game_id=${gameId}&winner=${userId}`);
+                    let data = await response.json();
+                    
+                    await getWinner();
+                    resolve(true);
                 });
             }
 
@@ -372,7 +370,7 @@ if (empty($game_id)) {
                     icon.textContent     = '🤝';
                     title.textContent    = "It's a Tie!";
                     subtitle.textContent = 'Nobody wins this round.';
-                } else if (winner === playerNum) {
+                } else if (winner === playerNum + 1) {
                     icon.textContent     = '🏆';
                     title.textContent    = 'You Won!';
                     subtitle.textContent = `Player ${winner} wins the game!`;
