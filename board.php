@@ -304,6 +304,8 @@ if (empty($game_id)) {
                     // check for winner and end game if there is one
                     await getWinner();
                     if (winner !== -1) {
+                        await updateGameState();
+                        await updateBoardView();
                         resolve('exit');
                     }
 
