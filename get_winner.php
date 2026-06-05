@@ -7,7 +7,7 @@ $game_id = $_GET['game_id'];
 
 // sql query to get winner
 $sql = "
-    SELECT winner
+    SELECT winner, game_status 
     FROM games 
     WHERE game_id = :game_id;
 ";
@@ -20,8 +20,13 @@ $stmt->execute();
 // fetch data
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Explicitly check for NULL - 0 is a valid winner value (tie)
-$winner = isset($data['winner']) && $data['winner'] !== null ? (int)$data['winner'] : -1;
+if ($data['winner'] !== null) {
+    $winner = (int)$data['winner'];   // real winner user id
+} elseif ((int)$data['game_status'] === 3) {
+    $winner = 0;                       // tie - return 0
+} else {
+    $winner = -1;                      // game still in progress
+}
 
 // return winner as int json
 header('Content-Type: application/json');

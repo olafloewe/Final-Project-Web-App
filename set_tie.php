@@ -8,9 +8,9 @@ $game_id = $_GET['game_id'] ?? '';
 // sql statement
 $sql = "
     UPDATE games 
-    SET winner = 0 
-    WHERE game_id = :game_id AND (winner IS NULL OR winner = -1); 
-";// Use IS NULL or = -1 to handle both possible "no winner yet" states
+    SET winner = NULL, game_status = 3 
+    WHERE game_id = :game_id;
+";
 
 // prepare and execute the SQL statement with injection prevention
 $stmt = $pdo->prepare($sql);
