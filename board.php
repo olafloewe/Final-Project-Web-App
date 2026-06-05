@@ -246,6 +246,10 @@ if (empty($game_id)) {
                 }) 
             }
 
+            function isBoardFull() {
+                return newGameState.every(cell => cell !== '-');
+            }
+
             // check wether someone won
             function checkForWinner() {
                 return new Promise(async (resolve) => {
