@@ -306,7 +306,7 @@ if (empty($game_id)) {
                     await updateBoardView();
                     
                     // check for winner and end game if there is one
-                    console.log(winner)
+                    console.log(`Winner: {winner}`);
                     await getWinner();
                     if (winner !== -1) {
                         resolve('exit');
