@@ -1,59 +1,79 @@
 <?php
+    // get player id of player one or two depending on num parameter
     function get_player_id(int $game_id, int $num = 0) : int {
+        // login to database
         include('db_credentials.php');
 
+        // sql statement to get player ids of player one and two
         $sql = "
             SELECT player_one, player_two 
             FROM games
             WHERE game_id = :game_id;
         ";
 
+        // prepare and execute sql with injection protection
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':game_id', $game_id, PDO::PARAM_STR);
         $stmt->execute();
 
+        // fetch and save data
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        // ternary operator to return player or player two depending on parameter
         return $num === 0 ? (int)$data['player_one'] : (int)$data['player_two'];
     }
 
+    // query to get game status of game with given id
     function get_game_status(int $game_id) : int {
+        // login to database
         include('db_credentials.php');
 
+        // sql statement to get game status of game with passed id
         $sql = "
             SELECT game_status 
             FROM games
             WHERE game_id = :game_id;
         ";
 
+        // prepare and execute sql with injection protection
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':game_id', $game_id, PDO::PARAM_STR);
         $stmt->execute();
 
+        // fetch and save data
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        // return game status as integer
         return (int)$data['game_status'];
     }
 
+    // query to get current player turn of game with given id
     function get_player_turn(int $game_id) {
+        // login to database
         include('db_credentials.php');
 
+        // sql statement to get current player turn of game with passed id
         $sql = "
             SELECT current_turn 
             FROM games
             WHERE game_id = :game_id;
         ";
 
+        // prepare and execute sql with injection protection
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':game_id', $game_id, PDO::PARAM_STR);
         $stmt->execute();
 
+        // fetch and save data
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        // save current player turn with null coalescing
         $current_turn = $data['current_turn'] ?? '';
 
+        // no ones turn 
         if (empty($current_turn)) {
+            // set it to player one's turn and return it
             return set_current_turn($game_id, $current_turn);
         }
 
+        // else return current player turn
         return $current_turn;
     }
 ?>
@@ -61,11 +81,13 @@
 <?php
 session_start();
 
+// save game id, game code, user id and player num from session with null coalescing
 $game_id = $_SESSION['game_id'] ?? "";
 $game_code = $_SESSION['game_code'] ?? "";
 $user_id = $_SESSION['user_id'] ?? "";
 $player_num = $_SESSION['player_num'] ?? "";
 
+// game id null failsafe, redirect to login page
 if (empty($game_id)) {
     header("Location: login.php");
     exit();
@@ -75,11 +97,13 @@ if (empty($game_id)) {
 <!DOCTYPE html>
 <html>
     <head>
+        // link stylesheets and set title
         <link rel="stylesheet" href="general_page_settings.css">
         <link rel="stylesheet" href="board.css">
         <title>Tic-Tac-Toe</title>
 
         <script>
+            // function to copy game code to clipboard
             function copyCode() {
                 $code = document.getElementById('game_code').textContent;
                 navigator.clipboard.writeText($code).then(() => {
@@ -87,16 +111,19 @@ if (empty($game_id)) {
                 });
             }
 
+            // function to close the invite modal
             function closeModal() {
                document.getElementById('modal_container').classList.remove('show');
             }
             
+            // show the board to allow players to make moves
             function enableBoard() {
                 cells.forEach(cell => { 
                     cell.classList.add('show');
                 })
             }    
 
+            // check wether game is active every 2 seconds and start game when it is
             function gameActive() {    
                 fetch('check_game_status.php?game_id=<?php echo $game_id; ?>')
                 .then(response => response.json())
@@ -109,12 +136,14 @@ if (empty($game_id)) {
                 });
             }
 
+            // get player symbol of player depending on num parameter
             function getPlayerSymbol() {
                 return fetch('get_player_symbol.php?player_num=<?php echo $player_num; ?>')
                 .then(response => response.json())
                 .then(data => data.symbol);
             }
 
+            // change player turn in database to the other player
             function changePlayerTurn() {
                 return new Promise(resolve => {
                     fetch(`set_player_turn.php?game_id=<?php echo $game_id; ?>&current_turn=${currentTurn}`)
@@ -125,6 +154,7 @@ if (empty($game_id)) {
                 }) 
             }
 
+            // set game state in database to the current game state
             function setGameState() {
                 return new Promise(resolve => {
                     fetch(`set_game_state.php?game_id=<?php echo $game_id; ?>&game_state=${gameState}`)
@@ -135,6 +165,7 @@ if (empty($game_id)) {
                 })
             }
 
+            // update the board view to match the current game state
             function updateBoardView() {
                 return new Promise(resolve => {
                     cells.forEach(cell => {
@@ -146,9 +177,9 @@ if (empty($game_id)) {
                     });
                     resolve(true);
                 })
-                
             }
 
+            // update the game state by fetching it from the database and splitting it into an array
             async function updateGameState() {
                 return new Promise(resolve => {
                     fetch('get_game_state.php?game_id=<?php echo $game_id; ?>')
@@ -161,6 +192,8 @@ if (empty($game_id)) {
                 })
             }
 
+            // wait till player makes a move based on if gamestate has been changed
+            // when move is made update game state, change player turn and check for winner  
             async function madeMove() {
                 while (gameState === newGameState.join('')) {
                     await new Promise(resolve => {
@@ -175,6 +208,7 @@ if (empty($game_id)) {
                 await checkForWinner();
             }
 
+            // save the winning player to the database and return it
             function setWinner() {
                 return new Promise(resolve => {
                     fetch(`set_winner.php?game_id=${gameId}&winner=${playerNum}`)
@@ -199,6 +233,7 @@ if (empty($game_id)) {
                 });
             }
 
+            // get the winning player from the database and save it into a variable
             function getWinner() {
                 return new Promise(resolve => {
                     fetch('get_winner.php?game_id=<?php echo $game_id; ?>')
@@ -211,10 +246,7 @@ if (empty($game_id)) {
                 }) 
             }
 
-            function isBoardFull() {
-                return newGameState.every(cell => cell !== '-');
-            }
-
+            // check wether someone won
             function checkForWinner() {
                 return new Promise(async (resolve) => {
                     let playerWon = false;
@@ -256,17 +288,22 @@ if (empty($game_id)) {
                 });
             }
 
+            // wits for the players turn
+            // update game state, view, board and check for winner on turn change
             async function waitForTurn() {
                 return new Promise(async(resolve) => {
+                    // get player turn based on game id and save it to a variable
                     let response = await fetch('get_player_turn.php?game_id=<?php echo $game_id; ?>');
                     let data = await response.json();
                     currentTurn = data.current_turn;
                     
+                    // check for winner and end game if there is one
                     await getWinner();
                     if (winner !== -1) {
                         resolve('exit');
                     }
 
+                    // "my turn" update game state, view and board, else wait 2 seconds and poll again
                     if (currentTurn === playerNum) {
                         await updateGameState();
                         await updateBoardView();
@@ -284,19 +321,25 @@ if (empty($game_id)) {
                 })
             }
 
-
+            // main game loop
             async function game() {
+                // initialize board    
                 enableBoard();
 
+                // loop while game is active without a winner
                 let exit = false;
                 while (!exit) {
+                    // wait for player to take turn
                     let result = await waitForTurn();
+                    // check for winner and exit loop if there is one
                     if (result === 'exit') break;
                     console.log('wait')
 
+                    // make move and check for winner, exit loop if there is one
                     await madeMove();
                     if (winner !== -1) break;
 
+                    // swtich turns
                     console.log('move');
                     await changePlayerTurn();
                     
@@ -307,9 +350,11 @@ if (empty($game_id)) {
                     })
                 }
 
+                // finalize game by showing winner and removing board
                 finishGame();
             }
 
+            // show the winner of the game
             function finishGame() {
                 const overlay  = document.getElementById('result-modal-overlay');
                 const icon     = document.getElementById('result-icon');
@@ -333,6 +378,7 @@ if (empty($game_id)) {
                 overlay.classList.add('show');
             }
 
+            // set player symbol and turn  in database then start the game
             function startGame() {
                 getPlayerSymbol()
                 .then(symbol => {
@@ -373,6 +419,7 @@ if (empty($game_id)) {
         </div>
         
         <?php
+            // if game status is 1 show waiting message and invite modal
             if (get_game_status($game_id) === 1) { ?>
                 <script>
                    document.getElementById('wait-message').innerHTML = "<p>Waiting for other players</p>";
@@ -394,6 +441,7 @@ if (empty($game_id)) {
         ?>
 
         <script>
+            // initialize game vairables
             let gameId = <?php echo $game_id; ?>;
             let userId = <?php echo $user_id; ?>;
             let playerNum = <?php echo $player_num; ?>;
@@ -401,6 +449,7 @@ if (empty($game_id)) {
             let playerSymbol = '';
             let currentTurn = -1;
             let winner = -1;
+            // "null" game state
             let gameState = '---------';
             let newGameState = gameState.split('');
 
@@ -408,12 +457,14 @@ if (empty($game_id)) {
 
             let cells = document.querySelectorAll('.cell');
 
+            // event listener for making a move
             cells.forEach(cell => {
                 cell.addEventListener('click', function() {
                     if (!isPlayerTurn || winner != -1) return;
                     
                     console.log(cell.dataset.num)
 
+                    // set cell to player symbol if its empty
                     if (cell.innerHTML === "") {
                         if (playerSymbol === "O") {
                             cell.innerHTML = '<img src="./images/blue_circle.png" width="60" height="auto">'
@@ -427,6 +478,7 @@ if (empty($game_id)) {
                         newGameState[cell.dataset.num] = playerSymbol;
                         console.log(newGameState.join(''));
                     }
+                    // dont allow player to move on occupied cell
                 });
             });
         </script>
