@@ -211,7 +211,7 @@ if (empty($game_id)) {
             // save the winning player to the database and return it
             function setWinner() {
                 return new Promise(resolve => {
-                    fetch(`set_winner.php?game_id=${gameId}&winner=${playerNum}`)
+                    fetch(`set_winner.php?game_id=${gameId}&winner=${userId}`)
                         .then(response => response.json())
                         .then(data => {
                             winner = data.winner;
@@ -301,19 +301,19 @@ if (empty($game_id)) {
                     let data = await response.json();
                     currentTurn = data.current_turn;
                     
+                    // update state and view of game
+                    await updateGameState();
+                    await updateBoardView();
+                    
                     // check for winner and end game if there is one
                     await getWinner();
                     if (winner !== -1) {
-                        await updateGameState();
-                        await updateBoardView();
                         resolve('exit');
+                        return;
                     }
 
                     // "my turn" update game state, view and board, else wait 2 seconds and poll again
                     if (currentTurn === playerNum) {
-                        await updateGameState();
-                        await updateBoardView();
-                        
                         console.log('your turn')
                         isPlayerTurn = true;
                         resolve(true);

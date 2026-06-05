@@ -13,9 +13,7 @@ FEATURES:
 	- running games list
 	- match history (finished games)
 - add error-handling
-
-
-- profile icon in the menu and board page (?)
+- profile button in the menu and ingame
 
 FORMATING:
 - seperate html, php, js in seperate files

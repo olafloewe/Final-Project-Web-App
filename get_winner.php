@@ -7,7 +7,7 @@ $game_id = $_GET['game_id'];
 
 // sql query to get winner
 $sql = "
-    SELECT winner, game_status 
+    SELECT winner, game_status, player_one, player_two 
     FROM games 
     WHERE game_id = :game_id;
 ";
@@ -21,11 +21,16 @@ $stmt->execute();
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($data['winner'] !== null) {
-    $winner = (int)$data['winner'];   // real winner user id
+    // translate user_id back to player number
+    if ((int)$data['winner'] === (int)$data['player_one']) {
+        $winner = 1;
+    } else {
+        $winner = 2;
+    }
 } elseif ((int)$data['game_status'] === 3) {
-    $winner = 0;                       // tie - return 0
+    $winner = 0;  // tie
 } else {
-    $winner = -1;                      // game still in progress
+    $winner = -1; // game still in progress (null in database)
 }
 
 // return winner as int json
