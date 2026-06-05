@@ -20,10 +20,10 @@ $stmt->execute();
 // fetch data
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// if no winner, return -1
-$winner = $data['winner'] ?? -1;
+// Explicitly check for NULL - 0 is a valid winner value (tie)
+$winner = isset($data['winner']) && $data['winner'] !== null ? (int)$data['winner'] : -1;
 
 // return winner as int json
 header('Content-Type: application/json');
-echo json_encode(['winner' => (int)$winner]);
+echo json_encode(['winner' => $winner]);
 ?>
