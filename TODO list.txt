@@ -24,4 +24,4 @@ FORMATING:
 
 = = = = = = = = = = = = = = = = = = VAULT = = = = = = = = = = = = = = = = = = 
 
-- in the tie/winner module add possibility to restart game or come back to the menu
+- game result pop up restart button
