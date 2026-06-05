@@ -80,3 +80,64 @@ button {
   width: 80%;
   text-align: center;
 }
+
+#result-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+#result-modal-overlay.show {
+  display: flex;
+}
+
+#result-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 48px 56px;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+  max-width: 380px;
+  width: 90%;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+#result-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+
+#result-title {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+}
+
+#result-subtitle {
+  color: #555;
+  margin: 0 0 28px;
+  font-size: 1rem;
+}
+
+#result-close-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#result-close-btn:hover {
+  background: #1d4ed8;
+}

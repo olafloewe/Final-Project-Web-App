@@ -177,14 +177,26 @@ if (empty($game_id)) {
 
             function setWinner() {
                 return new Promise(resolve => {
-                    fetch(`set_winner.php?game_id=${gameId}&winner=${userId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        winner = data.winner;
-                        console.log(`Winner: ${winner}`);
-                        resolve(true);
-                    })
-                }) 
+                    fetch(`set_winner.php?game_id=${gameId}&winner=${playerNum}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            winner = data.winner;
+                            console.log(`Winner: Player ${winner}`);
+                            resolve(true);
+                        });
+                });
+            }
+
+            function setTie() {
+                return new Promise(resolve => {
+                    fetch(`set_tie.php?game_id=${gameId}`)
+                        .then(response => response.json())
+                        .then(() => {
+                            winner = 0;
+                            console.log('Tie!');
+                            resolve(true);
+                        });
+                });
             }
 
             function getWinner() {
@@ -199,34 +211,49 @@ if (empty($game_id)) {
                 }) 
             }
 
+            function isBoardFull() {
+                return newGameState.every(cell => cell !== '-');
+            }
+
             function checkForWinner() {
-                return new Promise(async(resolve) => {
+                return new Promise(async (resolve) => {
+                    let playerWon = false;
 
-                    // check whether player won by filling a row
+                    // rows
                     for (let i = 0; i <= 6; i += 3) {
-                        if (newGameState[i] === playerSymbol && newGameState[i + 1] === playerSymbol && newGameState[i + 2] === playerSymbol) {
-                            setWinner();
+                        if (newGameState[i] === playerSymbol &&
+                            newGameState[i+1] === playerSymbol &&
+                            newGameState[i+2] === playerSymbol) {
+                            playerWon = true;
                         }
                     }
-
-                    // check whether player won by filling column
+                    // columns
                     for (let i = 0; i <= 2; i++) {
-                        if (newGameState[i] === playerSymbol && newGameState[i + 3] === playerSymbol && newGameState[i + 6] === playerSymbol) {
-                            setWinner();
+                        if (newGameState[i] === playerSymbol &&
+                            newGameState[i+3] === playerSymbol &&
+                            newGameState[i+6] === playerSymbol) {
+                            playerWon = true;
                         }
                     }
-
-                    // check whether player won by filling the spaces across the board
-                    let dif = 4; 
-                    for (let i = 0; i <= 2; i += 2) //"Checking if X or O won by filling the spaces across"
-                    {
-                        if (newGameState[i] === playerSymbol && newGameState[i + dif] === playerSymbol && newGameState[i + 2 * dif] === playerSymbol) {
-                            setWinner();
+                    // diagonals
+                    let dif = 4;
+                    for (let i = 0; i <= 2; i += 2) {
+                        if (newGameState[i] === playerSymbol &&
+                            newGameState[i+dif] === playerSymbol &&
+                            newGameState[i+2*dif] === playerSymbol) {
+                            playerWon = true;
                         }
                         dif = 2;
                     }
+
+                    if (playerWon) {
+                        await setWinner();
+                    } else if (isBoardFull()) {
+                        await setTie();
+                    }
+
                     resolve(true);
-                })
+                });
             }
 
             async function waitForTurn() {
@@ -284,7 +311,26 @@ if (empty($game_id)) {
             }
 
             function finishGame() {
-                document.getElementById('winner-message').innerHTML = `The winnner is ${winner}`;
+                const overlay  = document.getElementById('result-modal-overlay');
+                const icon     = document.getElementById('result-icon');
+                const title    = document.getElementById('result-title');
+                const subtitle = document.getElementById('result-subtitle');
+
+                if (winner === 0) {
+                    icon.textContent     = '🤝';
+                    title.textContent    = "It's a Tie!";
+                    subtitle.textContent = 'Nobody wins this round.';
+                } else if (winner === playerNum) {
+                    icon.textContent     = '🏆';
+                    title.textContent    = 'You Won!';
+                    subtitle.textContent = `Player ${winner} wins the game!`;
+                } else {
+                    icon.textContent     = '😔';
+                    title.textContent    = `Player ${winner} Wins!`;
+                    subtitle.textContent = 'Better luck next time.';
+                }
+
+                overlay.classList.add('show');
             }
 
             function startGame() {
@@ -302,6 +348,17 @@ if (empty($game_id)) {
     <body>
         <div class="message" id="winner-message"></div>
         <div class="message" id="wait-message"></div>
+
+        <div id="result-modal-overlay">
+        <div id="result-modal">
+            <div id="result-icon"></div>
+            <h2 id="result-title"></h2>
+            <p  id="result-subtitle"></p>
+            <button id="result-close-btn" onclick="document.getElementById('result-modal-overlay').classList.remove('show')">
+            Close
+            </button>
+        </div>
+        </div>
 
         <div id="board">
             <div class="cell" data-num ="0"></div>
