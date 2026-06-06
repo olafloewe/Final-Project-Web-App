@@ -20,29 +20,47 @@ if (empty($user_id)) {
 <body>
 
     <button id="profile-back-btn" onclick="history.back()">← Back</button>
-    <!-- Profile Header -->
     <div id="profile-container">
-
+        <!-- Profile Header -->
         <div id="profile-header">
             <div id="profile-avatar">👤</div>
             <h1 id="profile-username">Loading...</h1>
             <p id="profile-id"></p>
         </div>
 
+        <!-- Profile Statistics -->
         <div id="profile-stats">
-            <div class="stat-card" id="stat-played"> ... </div>
-            <div class="stat-card" id="stat-won"> ... </div>
-            <div class="stat-card" id="stat-lost"> ... </div>
-            <div class="stat-card" id="stat-winrate"> ... </div>
-        </div>
 
+            <div class="stat-card" id="stat-played">
+                <div class="stat-value" id="stat-played-value">—</div>
+                <div class="stat-label">Games Played</div>
+            </div>
+
+            <div class="stat-card" id="stat-won">
+                <div class="stat-value" id="stat-won-value">—</div>
+                <div class="stat-label">Games Won</div>
+            </div>
+
+            <div class="stat-card" id="stat-lost">
+                <div class="stat-value" id="stat-lost-value">—</div>
+                <div class="stat-label">Games Lost</div>
+            </div>
+
+            <div class="stat-card" id="stat-winrate">
+                <div class="stat-value" id="stat-winrate-value">—</div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+
+
+        </div> 
+
+        <!-- Match History -->
         <div id="match-history-section">
             <h2 id="match-history-title">Match History</h2>
             <div id="match-history-list">
                 <p id="match-history-loading">Loading...</p>
             </div>
-        </div>
-
+        </div>       
     </div>
 
     <!-- Profile Scripts -->
