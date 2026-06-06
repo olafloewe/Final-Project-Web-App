@@ -57,58 +57,60 @@ if (empty($user_id)) {
                     <p id="match-history-loading">Loading...</p>
                 </div>
             </div>
-        </div> 
+        
+
+            <!-- Profile Scripts -->
+            <script>
+                fetch('get_profile.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('profile-username').textContent = data.username;
+                        document.getElementById('profile-id').textContent = 'ID: ' + data.user_id;
+                        document.getElementById('stat-played-value').textContent = data.games_played;
+                        document.getElementById('stat-won-value').textContent = data.games_won;
+                        document.getElementById('stat-lost-value').textContent = data.games_lost;
+                        document.getElementById('stat-winrate-value').textContent = data.win_rate + '%';
+                    });
+
+                // load match history
+                fetch('get_match_history.php')
+                    .then(response => response.json())
+                    .then(games => {
+                        const list = document.getElementById('match-history-list');
+                        list.innerHTML = '';
+
+                        // if no games, show empty message
+                        if (games.length === 0) {
+                            list.innerHTML = '<p id="match-history-empty">No games played yet.</p>';
+                            return;
+                        }
+
+                        // create a row for each game
+                        games.forEach(game => {
+                            const row = document.createElement('div');
+                            row.classList.add('match-row');
+                            row.id = 'match-' + game.game_id;
+
+                            const resultClass = game.result === 'Win'  ? 'result-win'
+                                            : game.result === 'Loss' ? 'result-loss'
+                                            : 'result-tie';
+
+                            const winnerLabel = game.result === 'Tie' ? 'Tie' : '🏆 ' + game.winner_name;
+
+                            row.innerHTML = `
+                                <span class="match-result ${resultClass}">${game.result}</span>
+                                <span class="match-players">${game.player_one_name} vs ${game.player_two_name}</span>
+                                <span class="match-winner">${winnerLabel}</span>
+                            `;
+
+                            list.appendChild(row);
+                        });
+                    });
+            </script>
+        </div>
     </div>
 
-    <!-- Profile Scripts -->
-    <script>
-        fetch('get_profile.php')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('profile-username').textContent = data.username;
-                document.getElementById('profile-id').textContent = 'ID: ' + data.user_id;
-                document.getElementById('stat-played-value').textContent = data.games_played;
-                document.getElementById('stat-won-value').textContent = data.games_won;
-                document.getElementById('stat-lost-value').textContent = data.games_lost;
-                document.getElementById('stat-winrate-value').textContent = data.win_rate + '%';
-            });
 
-        // load match history
-        fetch('get_match_history.php')
-            .then(response => response.json())
-            .then(games => {
-                const list = document.getElementById('match-history-list');
-                list.innerHTML = '';
-
-                // if no games, show empty message
-                if (games.length === 0) {
-                    list.innerHTML = '<p id="match-history-empty">No games played yet.</p>';
-                    return;
-                }
-
-                // create a row for each game
-                games.forEach(game => {
-                    const row = document.createElement('div');
-                    row.classList.add('match-row');
-                    row.id = 'match-' + game.game_id;
-
-                    const resultClass = game.result === 'Win'  ? 'result-win'
-                                      : game.result === 'Loss' ? 'result-loss'
-                                      : 'result-tie';
-                                      
-                    const winnerLabel = game.result === 'Tie' ? 'Tie' : '🏆 ' + game.winner_name;
-
-                    row.innerHTML = `
-                        <span class="match-result ${resultClass}">${game.result}</span>
-                        <span class="match-players">${game.player_one_name} vs ${game.player_two_name}</span>
-                        <span class="match-winner">${winnerLabel}</span>
-                    `;
-
-                    list.appendChild(row);
-                });
-            });
-
-    </script>
 
 </body>
 </html>

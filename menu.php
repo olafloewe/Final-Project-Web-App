@@ -40,10 +40,6 @@ if (!empty($error_message)) unset($_SESSION['code_error']);
 
     <body>
 
-        <button id="profile-btn" onclick="window.location.href='profile.php'">
-            Profile
-        </button>
-
         <div id="menu_container">
             <h1>WELCOME TO TIC-TAC-TOE</h1>
             <form action="create_game.php">
@@ -51,10 +47,16 @@ if (!empty($error_message)) unset($_SESSION['code_error']);
             </form>
             
             <button onClick="openModal()">JOIN GAME</button>
+                
+            <button id="profile-btn" onclick="window.location.href='profile.php'">
+                Profile
+            </button>
             
+            <!-- 
             <form action="">
                 <button>JOIN RANDOM GAME</button>
-            </form>
+            </form> 
+            -->
         </div>
 
         <div id="modal_container" class="modal_container">
