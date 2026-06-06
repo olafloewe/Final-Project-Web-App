@@ -39,6 +39,11 @@ if (!empty($error_message)) unset($_SESSION['code_error']);
     </head>
 
     <body>
+
+        <button id="profile-btn" onclick="window.location.href='profile.php'">
+            Profile
+        </button>
+
         <div id="menu_container">
             <h1>WELCOME TO TIC-TAC-TOE</h1>
             <form action="create_game.php">

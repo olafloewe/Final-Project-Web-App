@@ -428,6 +428,11 @@ if (empty($game_id)) {
             <div class="cell" data-num ="8"></div>
         </div>
 
+        <!-- Profile Button -->
+        <button id="profile-btn" onclick="window.location.href='profile.php'">
+            Profile
+        </button>
+
         <!-- Back to Menu Button -->
         <div>
             <button id="back-to-menu-btn" onclick="window.location.href='menu.php'">
