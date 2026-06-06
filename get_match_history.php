@@ -44,7 +44,7 @@ $history = [];
 foreach ($games as $game) {
     if ($game['winner'] === null) {
         $result      = 'Tie';
-        $winner_name = '—';
+        $winner_name = '-----';
     } elseif ((int)$game['winner'] === (int)$game['player_one']) {
         $winner_name = $game['player_one_name'];
         $result      = ((int)$game['winner'] === (int)$user_id) ? 'Win' : 'Loss';

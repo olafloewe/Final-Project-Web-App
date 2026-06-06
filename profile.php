@@ -95,11 +95,13 @@ if (empty($user_id)) {
                     const resultClass = game.result === 'Win'  ? 'result-win'
                                       : game.result === 'Loss' ? 'result-loss'
                                       : 'result-tie';
+                                      
+                    const winnerLabel = game.result === 'Tie' ? 'Tie' : '🏆 ' + game.winner_name;
 
                     row.innerHTML = `
                         <span class="match-result ${resultClass}">${game.result}</span>
                         <span class="match-players">${game.player_one_name} vs ${game.player_two_name}</span>
-                        <span class="match-winner">🏆 ${game.winner_name}</span>
+                        <span class="match-winner">${winnerLabel}</span>
                     `;
 
                     list.appendChild(row);
