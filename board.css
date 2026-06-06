@@ -156,3 +156,20 @@ button {
 #result-menu-btn:hover {
   background: #eff6ff;
 }
+
+#back-to-menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #fff;
+    color: #2563eb;
+    border: 2px solid #2563eb;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+#back-to-menu-btn:hover {
+    background: #eff6ff;
+}

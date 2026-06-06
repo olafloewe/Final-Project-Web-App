@@ -400,6 +400,7 @@ if (empty($game_id)) {
         <div class="message" id="winner-message"></div>
         <div class="message" id="wait-message"></div>
 
+        <!-- Game Result Modal -->
         <div id="result-modal-overlay">
             <div id="result-modal">
                 <div id="result-icon"></div>
@@ -414,6 +415,7 @@ if (empty($game_id)) {
             </div>
         </div>
 
+        <!-- Game Board -->
         <div id="board">
             <div class="cell" data-num ="0"></div>
             <div class="cell" data-num ="1"></div>
@@ -424,6 +426,13 @@ if (empty($game_id)) {
             <div class="cell" data-num ="6"></div>
             <div class="cell" data-num ="7"></div>
             <div class="cell" data-num ="8"></div>
+        </div>
+
+        <!-- Back to Menu Button -->
+        <div>
+            <button id="back-to-menu-btn" onclick="window.location.href='menu.php'">
+                Back to Menu
+            </button>
         </div>
         
         <?php
