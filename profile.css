@@ -20,9 +20,11 @@
     margin: 80px auto 40px;
     padding: 0 20px;
     text-align: center;
+    box-sizing: border-box;
+    width: 100%;
 }
 
-/* ── Header card ── */
+/* -- Header card -- */
 #profile-header {
     background: #fff;
     border-radius: 16px;
@@ -48,7 +50,7 @@
     font-size: 0.95rem;
 }
 
-/* ── Stats grid ── */
+/* -- Stats grid -- */
 #profile-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -80,13 +82,15 @@
     letter-spacing: 0.05em;
 }
 
-/* ── Match history ── */
+/* -- Match history -- */
 #match-history-section {
     background: #fff;
     border-radius: 16px;
     padding: 28px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     text-align: left;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #match-history-title {
