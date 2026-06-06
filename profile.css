@@ -84,13 +84,9 @@
 
 /* -- Match history -- */
 #match-history-section {
-    background: #fff;
-    border-radius: 16px;
-    padding: 28px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    text-align: left;
     width: 100%;
     box-sizing: border-box;
+    clear: both;
 }
 
 #match-history-title {
