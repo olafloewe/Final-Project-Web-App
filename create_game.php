@@ -2,7 +2,7 @@
 // function to check if game code is unique (not already in use for an active game)
 function is_unique_code(string $game_code) : bool {
     // login to database
-    include('db_credentials.php');
+    include('api/db_credentials.php');
 
     // sql query to check if game code already exists for an active game
     $sql = "
@@ -23,7 +23,7 @@ function is_unique_code(string $game_code) : bool {
 
 session_start();
 // login to database
-include('db_credentials.php');
+include('api/db_credentials.php');
 
 // check for user id else redirect to login page
 $user_id = $_SESSION['user_id'] ?? "";

@@ -2,7 +2,7 @@
 // function to check if game code exists for an active game with only one player
 function code_exists(string $game_code) : bool {
     // login to database
-    include('db_credentials.php');
+    include('api/db_credentials.php');
 
     // sql query to check if game code exists for an active game with only one player
     $sql = "
@@ -13,7 +13,7 @@ function code_exists(string $game_code) : bool {
 
     // prepare and execute SQL with injection protection
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue('game_code', $game_code, PDO::PARAM_STR);
+    $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
     $stmt->execute();
 
     // return wether game code exists
@@ -24,7 +24,7 @@ function code_exists(string $game_code) : bool {
 // function to get game id from game code
 function get_game_id(string $game_code) : int {
     // login to database
-    include('db_credentials.php');
+    include('api/db_credentials.php');
 
     // sql query to get game id from game code
     $sql = "
@@ -35,7 +35,7 @@ function get_game_id(string $game_code) : int {
 
     // prepare and execute SQL with injection protection
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue('game_code', $game_code, PDO::PARAM_STR);
+    $stmt->bindValue(':game_code', $game_code, PDO::PARAM_STR);
     $stmt->execute();
 
     // fetch data and return game id
@@ -46,7 +46,7 @@ function get_game_id(string $game_code) : int {
 session_start();
 
 // login to database
-include('db_credentials.php');
+include('api/db_credentials.php');
 $game_code = $_POST['game_code'];
 
 // check if game code exists for an active game with only one player else return error
