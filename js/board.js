@@ -249,8 +249,13 @@ function pollGameStatus() {
 function startGame() {
     getPlayerSymbol().then(symbol => {
         playerSymbol = symbol;
-        fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=${currentTurn}`)
-            .then(() => runGame());
+ 
+        if (playerNum === 1) {
+            fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=2`)
+                .then(() => runGame());
+        } else {
+            runGame();
+        }
     });
 }
 
