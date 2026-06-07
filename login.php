@@ -1,59 +1,49 @@
 <?php
 session_start();
 
-// check for error message
-$error_message = $_SESSION['login_error'] ?? "";
+$error_message   = $_SESSION['login_error']    ?? '';
+$sign_up_message = $_SESSION['sign_up_message'] ?? '';
 
-// unset error message if it exists
-if (!empty($error_message)) unset($_SESSION['login_error']);
-
-// check for successful sign up message
-$sign_up_message = $_SESSION['sign_up_message'] ?? "";
-
-// unset successful sign up message if it exists
+if (!empty($error_message))   unset($_SESSION['login_error']);
 if (!empty($sign_up_message)) unset($_SESSION['sign_up_message']);
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Login</title>
+</head>
+<body>
 
-<html>
-    <head>
-        <link rel="stylesheet" href="general_page_settings.css">
-        <link rel="stylesheet" href="login.css">
-        <title>Login</title>    
-    </head>
-      
-    <body>
-        <div class="container" id="login_form">
-            <h1>LOGIN</h1>
-            
-            <?php
-                // display successful sign up message if it exists
-                if ($sign_up_message) {
-                    echo '<p style="color: white;">The sign up was successful!<br>Please login below</p>';
-                }
-            ?>
+    <div id="login-container">
+        <h1>LOGIN</h1>
 
-            
-            <form method="post" action="login_check_credentials.php" autocomplete="off">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+        <?php if ($sign_up_message): ?>
+            <p id="signup-success-msg">Sign up successful! Please log in below.</p>
+        <?php endif; ?>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+        <form id="login-form" method="post" action="api/login_check_credentials.php" autocomplete="off">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
 
-                <?php
-                    // display error message if it exists
-                    if ($error_message) {
-                        echo '<p style="color: red;">Incorrect username or password!</p>';
-                    }
-                ?>
-                
-                <button type="submit">LOGIN</button>
-            </form>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
 
-            <div id="sign_up">
-                <p>Don't have an account?</p>
-                <a href="sign_up.html">Sign up!</a>
-            </div>
+            <?php if ($error_message): ?>
+                <p id="login-error-msg">Incorrect username or password!</p>
+            <?php endif; ?>
+
+            <button id="login-btn" type="submit">LOGIN</button>
+        </form>
+
+        <div id="signup-link">
+            <p>Don't have an account?</p>
+            <a href="sign_up.html">Sign up!</a>
         </div>
-    </body>
+    </div>
+
+</body>
 </html>

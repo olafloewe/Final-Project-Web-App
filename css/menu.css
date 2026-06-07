@@ -1,0 +1,136 @@
+/* -- Menu container -------------------------------------------------------- */
+#menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 80px;
+}
+
+#menu-container h1 {
+    color: #fff;
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+/* -- Menu buttons ---------------------------------------------------------- */
+#create-game-btn,
+#join-game-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 40px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 200px;
+}
+
+#create-game-btn:hover,
+#join-game-btn:hover {
+    background: #1d4ed8;
+}
+
+#profile-btn {
+    background: #fff;
+    color: #2563eb;
+    border: 2px solid #2563eb;
+    border-radius: 8px;
+    padding: 12px 40px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 200px;
+}
+
+#profile-btn:hover {
+    background: #eff6ff;
+}
+
+/* -- Join game modal ------------------------------------------------------- */
+#join-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+#join-modal-overlay.show {
+    display: flex;
+}
+
+#join-modal {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+    max-width: 360px;
+    width: 90%;
+    position: relative;
+}
+
+#join-modal h2 {
+    margin: 0 0 8px;
+}
+
+#game-code-input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin: 16px 0 8px;
+    box-sizing: border-box;
+}
+
+#game-code-input:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+#game-code-error {
+    min-height: 24px;
+    margin-bottom: 8px;
+}
+
+.error-text {
+    color: #dc2626;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+#join-submit-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#join-submit-btn:hover {
+    background: #1d4ed8;
+}
+
+#close-join-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #888;
+}
+
+#close-join-btn:hover {
+    color: #333;
+}
