@@ -54,9 +54,11 @@ function updateGameState() {
         });
 }
 
-function changePlayerTurn() {
-    return fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=${currentTurn}`)
-        .then(() => console.log('Turn changed'));
+async function changePlayerTurn() {
+    const res   = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
+    const data  = await res.json();
+    currentTurn = data.current_turn;
+    await fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=${currentTurn}`);
 }
 
 function setWinner() {
