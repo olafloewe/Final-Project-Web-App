@@ -4,14 +4,13 @@
 - (ingame) back to menu button
 - profile button in the menu and ingame
 - profile (stats: winrate, games played etc.)
+- match history (finished games)
 
 = = = = = = = = = = = = = = = = = = TODO = = = = = = = = = = = = = = = = = = 
 
 FEATURES:
 
 - running games list
-- match history (finished games)
-
 - add error-handling
 
 FORMATING:
