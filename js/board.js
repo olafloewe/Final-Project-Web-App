@@ -70,9 +70,9 @@ async function changePlayerTurn() {
 function setWinner() {
     return fetch(`api/set_winner.php?game_id=${gameId}&winner=${userId}`)
         .then(res => res.json())
-        .then(data => {
-            winner = data.winner;
-            console.log('Winner set:', winner);
+        .then(() => {
+            winner = playerNum;
+            console.log(`Winner set to playerNum: ${winner}`);
         });
 }
 
@@ -80,7 +80,7 @@ function setTie() {
     return fetch(`api/set_tie.php?game_id=${gameId}`)
         .then(res => res.json())
         .then(() => {
-            winner = -2; // tie
+            winner = -2; // -2 = tie (0 and 1 are valid player numbers)
             console.log('Tie set');
         });
 }
@@ -122,26 +122,20 @@ async function checkForWinner() {
     for (let i = 0; i <= 6; i += 3) {
         if (newGameState[i] === playerSymbol &&
             newGameState[i + 1] === playerSymbol &&
-            newGameState[i + 2] === playerSymbol) {
-            playerWon = true;
-        }
+            newGameState[i + 2] === playerSymbol) playerWon = true;
     }
     // columns
     for (let i = 0; i <= 2; i++) {
         if (newGameState[i] === playerSymbol &&
             newGameState[i + 3] === playerSymbol &&
-            newGameState[i + 6] === playerSymbol) {
-            playerWon = true;
-        }
+            newGameState[i + 6] === playerSymbol) playerWon = true;
     }
     // diagonals
     let step = 4;
     for (let i = 0; i <= 2; i += 2) {
         if (newGameState[i] === playerSymbol &&
             newGameState[i + step] === playerSymbol &&
-            newGameState[i + 2 * step] === playerSymbol) {
-            playerWon = true;
-        }
+            newGameState[i + 2 * step] === playerSymbol) playerWon = true;
         step = 2;
     }
 
@@ -270,5 +264,5 @@ function startGame() {
     });
 }
 
-// -- Boot ---------------------------------------------------------------------
+// -- Boot --------------------------------------------------------------------
 pollGameStatus();
