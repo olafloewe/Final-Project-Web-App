@@ -25,3 +25,4 @@ FORMATING:
 - join random game
 	- create private game
 	- create public game
+ 
