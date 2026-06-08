@@ -1,4 +1,5 @@
 // -- Game variables (injected by board.php via data attributes) --------------
+// winner sentinels: -1 = in progress, -2 = tie, 0 = player 0 won, 1 = player 1 won
 const boardEl    = document.getElementById('board');
 let gameId       = parseInt(boardEl.dataset.gameId);
 let userId       = parseInt(boardEl.dataset.userId);
@@ -59,8 +60,8 @@ function updateGameState() {
 }
 
 async function changePlayerTurn() {
-    const res = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
-    const data = await res.json();
+    const res   = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
+    const data  = await res.json();
     currentTurn = data.current_turn;
     await fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=${currentTurn}`);
     console.log('Turn switched from', currentTurn);
@@ -172,7 +173,7 @@ async function waitForTurn() {
     updateBoardView();
     await getWinner();
 
-    if (winner !== -1) return 'exit';
+    if (gameOver()) return 'exit';
 
     if (currentTurn === playerNum) {
         console.log('Your turn');
@@ -193,7 +194,7 @@ async function runGame() {
         if (turnResult === 'exit') break;
 
         await waitForMove();
-        if (winner !== -1) break;
+        if (gameOver()) break;
 
         await changePlayerTurn();
     }
@@ -207,21 +208,22 @@ function showResultModal() {
     const icon     = document.getElementById('result-icon');
     const title    = document.getElementById('result-title');
     const subtitle = document.getElementById('result-subtitle');
- 
+
+    // winner is 0 or 1 (internal player num), display as "Player 1" or "Player 2"
+    const winnerLabel = `Player ${winner + 1}`;
+    const otherLabel  = `Player ${(playerNum === 0) ? 2 : 1}`;
+
     if (winner === -2) {
-        // tie
         icon.textContent     = '🤝';
         title.textContent    = "It's a Tie!";
         subtitle.textContent = 'Nobody wins this round.';
     } else if (winner === playerNum) {
-        // this player won
         icon.textContent     = '🏆';
         title.textContent    = 'You Won!';
-        subtitle.textContent = `Player ${winner + 1} wins the game!`;
+        subtitle.textContent = `${otherLabel} lost this round.`;
     } else {
-        // other player won
         icon.textContent     = '😔';
-        title.textContent    = `Player ${winner + 1} Wins!`;
+        title.textContent    = `${winnerLabel} Wins!`;
         subtitle.textContent = 'Better luck next time.';
     }
  
