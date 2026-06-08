@@ -5,6 +5,8 @@
 - profile button in the menu and ingame
 - profile (stats: winrate, games played etc.)
 - match history (finished games)
+- seperate html, php, js in seperate files
+- change underscores to hiphens in html and css. Html names are used in php sometimes 
 
 = = = = = = = = = = = = = = = = = = TODO = = = = = = = = = = = = = = = = = = 
 
@@ -14,8 +16,6 @@ FEATURES:
 - add error-handling
 
 FORMATING:
-- seperate html, php, js in seperate files
-- change underscores to hiphens in html and css. Html names are used in php sometimes 
 - integrate css
 
 = = = = = = = = = = = = = = = = = = VAULT = = = = = = = = = = = = = = = = = = 
