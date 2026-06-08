@@ -1,15 +1,15 @@
 // -- Game variables (injected by board.php via data attributes) --------------
-const boardEl     = document.getElementById('board');
-let gameId        = parseInt(boardEl.dataset.gameId);
-let userId        = parseInt(boardEl.dataset.userId);
-let playerNum     = parseInt(boardEl.dataset.playerNum);
+const boardEl    = document.getElementById('board');
+let gameId       = parseInt(boardEl.dataset.gameId);
+let userId       = parseInt(boardEl.dataset.userId);
+let playerNum    = parseInt(boardEl.dataset.playerNum);
 
-let isPlayerTurn  = false;
-let playerSymbol  = '';
-let currentTurn   = -1;
-let winner        = -1;
-let gameState     = '---------';
-let newGameState  = gameState.split('');
+let isPlayerTurn = false;
+let playerSymbol = '';
+let currentTurn  = -1;
+let winner       = -1;
+let gameState    = '---------';
+let newGameState = gameState.split('');
 
 const cells = document.querySelectorAll('.cell');
 
@@ -39,7 +39,6 @@ function getPlayerSymbol() {
         .then(data => data.symbol);
 }
 
-// game state management
 function setGameState() {
     return fetch(`api/set_game_state.php?game_id=${gameId}&game_state=${gameState}`)
         .then(() => console.log('Game state saved'));
@@ -55,10 +54,11 @@ function updateGameState() {
 }
 
 async function changePlayerTurn() {
-    const res   = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
-    const data  = await res.json();
+    const res = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
+    const data = await res.json();
     currentTurn = data.current_turn;
     await fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=${currentTurn}`);
+    console.log('Turn switched from', currentTurn);
 }
 
 function setWinner() {
@@ -150,7 +150,6 @@ async function checkForWinner() {
 async function waitForMove() {
     while (gameState === newGameState.join('')) {
         await new Promise(resolve => setTimeout(resolve, 100));
-        console.log('Waiting for move...');
     }
 
     isPlayerTurn = false;
@@ -160,9 +159,9 @@ async function waitForMove() {
 }
 
 async function waitForTurn() {
-    const res     = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
-    const data    = await res.json();
-    currentTurn   = data.current_turn;
+    const res = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
+    const data = await res.json();
+    currentTurn = data.current_turn;
 
     await updateGameState();
     updateBoardView();
@@ -176,6 +175,7 @@ async function waitForTurn() {
         return 'play';
     }
 
+    console.log('Not your turn, polling...');
     await new Promise(resolve => setTimeout(resolve, 2000));
     return waitForTurn();
 }
@@ -251,7 +251,6 @@ function pollGameStatus() {
 function startGame() {
     getPlayerSymbol().then(symbol => {
         playerSymbol = symbol;
- 
         if (playerNum === 1) {
             fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=2`)
                 .then(() => runGame());
