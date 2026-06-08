@@ -74,7 +74,7 @@ function setTie() {
     return fetch(`api/set_tie.php?game_id=${gameId}`)
         .then(res => res.json())
         .then(() => {
-            winner = -1; // tie
+            winner = -2; // tie
             console.log('Tie set');
         });
 }
@@ -203,7 +203,7 @@ function showResultModal() {
     const title    = document.getElementById('result-title');
     const subtitle = document.getElementById('result-subtitle');
  
-    if (winner === -1) {
+    if (winner === -2) {
         // tie
         icon.textContent     = '🤝';
         title.textContent    = "It's a Tie!";

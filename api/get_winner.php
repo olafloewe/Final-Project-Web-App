@@ -16,7 +16,7 @@ if ($data['winner'] !== null) {
     // translate stored user_id back to player number (0 or 1)
     $result = ((int)$data['winner'] === (int)$data['player_one']) ? 0 : 1;
 } elseif ((int)$data['game_status'] === 3) {
-    $result = -1; // tie
+    $result = -2; // tie
 } else {
     $result = -1; // game still in progress
 }
