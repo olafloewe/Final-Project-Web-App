@@ -13,10 +13,15 @@ let newGameState = gameState.split('');
 
 const cells = document.querySelectorAll('.cell');
 
-// -- Board interaction --------------------------------------------------------
+// game is over when winner is anything other than -1
+function gameOver() { 
+    return winner !== -1; 
+}
+
+// -- Board interaction -------------------------------------------------------
 cells.forEach(cell => {
     cell.addEventListener('click', function () {
-        if (!isPlayerTurn || winner !== -1) return;
+        if (!isPlayerTurn || gameOver()) return;
         if (cell.innerHTML !== '') return;
 
         if (playerSymbol === 'O') {
