@@ -30,16 +30,16 @@ body {
 .container {
     background-color: #ffffff;
     width: 100%;
-    max-width: 360px; 
-    min-height: 400px; 
+    max-width: 360px;
+    min-height: 400px;
     padding: 35px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    position: relative; 
-    z-index: 10; 
+    position: relative;
+    z-index: 10;
 }
 
 h1 {
@@ -53,7 +53,7 @@ h1 {
 form {
     display: flex;
     flex-direction: column;
-    gap: 5px; 
+    gap: 5px;
 }
 
 label {
@@ -81,8 +81,8 @@ input:focus {
    4. ERROR / SUCCESS MESSAGES
    ========================================================================== */
 .msg-box {
-    padding: 8px 12px; 
-    margin: 0 0 15px 0; 
+    padding: 8px 12px;
+    margin: 0 0 15px 0;
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 600;
@@ -131,158 +131,168 @@ button[type="submit"]:active {
    ========================================================================== */
 #sign_up {
     text-align: center;
-    margin-top: auto; 
+    margin-top: auto;
     padding-top: 20px;
     font-size: 0.9rem;
-    color: var(--dark-teal); 
+    color: var(--dark-teal);
 }
 
 #sign_up a {
-    color: var(--dark-teal); 
+    color: var(--dark-teal);
     text-decoration: none;
     font-weight: bold;
     transition: color 0.2s ease;
 }
 
 #sign_up a:hover {
-    color: var(--medium-teal); 
+    color: var(--medium-teal);
     text-decoration: underline;
 }
 
 #sign_up p {
-    color: black; 
+    color: black;
 }
 
 /* ==========================================================================
-   7. TIC-TAC-TOE BACKGROUND ANIMATION (WHITE-TO-DARK COLOR CYCLE)
+   7. TIC-TAC-TOE BACKGROUND
    ========================================================================== */
 .bg-wrapper {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; 
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
     pointer-events: none;
     overflow: hidden;
 }
 
 .tic-tac-toe-bg {
     position: absolute;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 15px;
-    opacity: 0.35; 
+    opacity: 0.35;
 }
 
-/* Board Positions & Scale Dimensions */
 .main-board {
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 650px; 
-    height: 650px;
+    width: 650px; height: 650px;
 }
 
 .mini-board {
-    width: 250px;
-    height: 250px;
+    width: 250px; height: 250px;
 }
 
-.top-left { top: 5%; left: 5%; transform: rotate(-15deg); }
+.top-left     { top: 5%; left: 5%; transform: rotate(-15deg); }
 .bottom-right { bottom: 5%; right: 5%; transform: rotate(15deg); }
 
-.cell {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Soft vector blend drop-shadow */
-.cell.x::before, .cell.x::after, .cell.o::before {
-    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.25));
-}
-
-/* Symmetrical X Baseline Shape */
-.cell.x::before, .cell.x::after {
-    content: '';
+/* ==========================================================================
+   8. SVG BOARD ELEMENTS
+   ========================================================================== */
+.board-svg {
     position: absolute;
-    width: 12px;
-    height: 75px;
-    background-color: transparent;
-    border-radius: 6px;
-    opacity: 0;
-    top: calc(50% - 37.5px); 
-    left: calc(50% - 6px);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: visible;
 }
 
-/* Hollow O Baseline Shape */
-.cell.o::before {
-    content: '';
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border: 12px solid transparent; 
-    background-color: transparent !important; 
-    border-radius: 50%;
-    opacity: 0;
-    box-sizing: border-box;
+.grid-line {
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 3;
+    stroke-linecap: round;
 }
 
-/* Global Loop Configuration */
-.cell::before, .cell::after {
-    animation-duration: 9s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
+.token-x-line {
+    stroke: white;
+    stroke-width: 9;
+    stroke-linecap: round;
+    fill: none;
 }
 
-/* Turn Delay Map */
-.token-1::before, .token-1::after { animation-delay: 0.5s; }
-.token-2::before, .token-2::after { animation-delay: 1.5s; }
-.token-3::before, .token-3::after { animation-delay: 2.5s; }
-.token-4::before, .token-4::after { animation-delay: 3.5s; }
-.token-5::before, .token-5::after { animation-delay: 4.5s; }
-.token-6::before, .token-6::after { animation-delay: 5.5s; }
-
-/* Apply individual transformation tracks */
-.cell.x::before { animation-name: animateXLine1; }
-.cell.x::after  { animation-name: animateXLine2; }
-.cell.o::before { animation-name: animateCircleRing; }
-
+.token-o {
+    stroke: white;
+    stroke-width: 9;
+    stroke-linecap: round;
+    fill: none;
+}
 
 /* ==========================================================================
-   8. WHITE TO DARK TRANSITION KEYFRAMES
+   9. TOKEN APPEAR ANIMATION (opacity + scale only — GPU friendly)
+   ========================================================================== */
+.token {
+    opacity: 0;
+    animation: tokenAppear 0.5s ease-out forwards;
+}
+
+@keyframes tokenAppear {
+    0%   { opacity: 0; transform: scale(0.4); }
+    70%  { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1);   }
+}
+
+.delay-1 { animation-delay: 0.4s; }
+.delay-2 { animation-delay: 1.0s; }
+.delay-3 { animation-delay: 1.6s; }
+.delay-4 { animation-delay: 2.2s; }
+.delay-5 { animation-delay: 2.8s; }
+.delay-6 { animation-delay: 3.4s; }
+.delay-7 { animation-delay: 4.0s; }
+.delay-8 { animation-delay: 4.6s; }
+.delay-9 { animation-delay: 5.2s; }
+
+/* ==========================================================================
+   10. WINNING LINE
    ========================================================================== */
 
-/* Left-to-Right diagonal line of X */
-@keyframes animateXLine1 {
-    0% { opacity: 0; transform: scale(0.5) rotate(45deg); background-color: #ffffff; }
-    15% { opacity: 1; transform: scale(1.1) rotate(45deg); background-color: #ffffff; } /* Bright white entry pop */
-    30% { opacity: 1; transform: scale(1) rotate(45deg); background-color: var(--light-teal); }
-    50%, 70% { opacity: 1; transform: scale(1) rotate(45deg); background-color: var(--main-teal); } /* Aging state */
-    85% { opacity: 1; transform: scale(1) rotate(45deg); background-color: var(--dark-teal); } /* Deep integration state */
-    95%, 100% { opacity: 0; transform: scale(0.8) rotate(45deg); }
+/* X wins — main board diagonal ~389px */
+.win-x {
+    stroke:#0f0913 ;
+    stroke-width: 6;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0;
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    animation:
+        winDraw 0.7s ease-out 3.6s forwards,
+        winPulse 2s ease-in-out 4.3s infinite;
 }
 
-/* Right-to-Left diagonal line of X */
-@keyframes animateXLine2 {
-    0% { opacity: 0; transform: scale(0.5) rotate(-45deg); background-color: #ffffff; }
-    15% { opacity: 1; transform: scale(1.1) rotate(-45deg); background-color: #ffffff; }
-    30% { opacity: 1; transform: scale(1) rotate(-45deg); background-color: var(--light-teal); }
-    50%, 70% { opacity: 1; transform: scale(1) rotate(-45deg); background-color: var(--main-teal); }
-    85% { opacity: 1; transform: scale(1) rotate(-45deg); background-color: var(--dark-teal); }
-    95%, 100% { opacity: 0; transform: scale(0.8) rotate(-45deg); }
+/* O wins — bottom-right board horizontal ~250px */
+.win-o {
+    stroke:#0f0913 ;
+    stroke-width: 6;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0;
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+    animation:
+        winDraw 0.7s ease-out 4.2s forwards,
+        winPulse 2s ease-in-out 4.9s infinite;
 }
 
-/* Circle Ring Animation */
-@keyframes animateCircleRing {
-    0% { opacity: 0; transform: scale(0.5); border-color: #ffffff; }
-    15% { opacity: 1; transform: scale(1.1); border-color: #ffffff; }
-    30% { opacity: 1; transform: scale(1); border-color: var(--light-teal); }
-    50%, 70% { opacity: 1; transform: scale(1); border-color: var(--main-teal); }
-    85% { opacity: 1; transform: scale(1); border-color: var(--dark-teal); }
-    95%, 100% { opacity: 0; transform: scale(0.8); }
+@keyframes winDraw {
+    0%   { opacity: 1; stroke-dashoffset: inherit; }
+    100% { opacity: 1; stroke-dashoffset: 0; }
+}
+
+@keyframes winPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+/* Override — separate keyframes per line length */
+.win-x {
+    animation: winDrawX 0.7s ease-out 3.6s forwards, winPulse 2s ease-in-out 4.3s infinite;
+}
+.win-o {
+    animation: winDrawO 0.7s ease-out 4.2s forwards, winPulse 2s ease-in-out 4.9s infinite;
+}
+
+@keyframes winDrawX {
+    0%   { opacity: 1; stroke-dashoffset: 400; }
+    100% { opacity: 1; stroke-dashoffset: 0; }
+}
+
+@keyframes winDrawO {
+    0%   { opacity: 1; stroke-dashoffset: 260; }
+    100% { opacity: 1; stroke-dashoffset: 0; }
 }
