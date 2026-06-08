@@ -48,7 +48,7 @@ function updateGameState() {
     return fetch(`api/get_game_state.php?game_id=${gameId}`)
         .then(res => res.json())
         .then(data => {
-            gameState    = data.game_state;
+            gameState = data.game_state;
             newGameState = gameState.split('');
         });
 }
@@ -74,7 +74,7 @@ function setTie() {
     return fetch(`api/set_tie.php?game_id=${gameId}`)
         .then(res => res.json())
         .then(() => {
-            winner = 0;
+            winner = -1; // tie
             console.log('Tie set');
         });
 }
@@ -202,21 +202,24 @@ function showResultModal() {
     const icon     = document.getElementById('result-icon');
     const title    = document.getElementById('result-title');
     const subtitle = document.getElementById('result-subtitle');
-
-    if (winner === 0) {
+ 
+    if (winner === -1) {
+        // tie
         icon.textContent     = '🤝';
         title.textContent    = "It's a Tie!";
         subtitle.textContent = 'Nobody wins this round.';
     } else if (winner === playerNum) {
+        // this player won
         icon.textContent     = '🏆';
         title.textContent    = 'You Won!';
-        subtitle.textContent = `Player ${winner} wins the game!`;
+        subtitle.textContent = `Player ${winner + 1} wins the game!`;
     } else {
+        // other player won
         icon.textContent     = '😔';
-        title.textContent    = `Player ${winner} Wins!`;
+        title.textContent    = `Player ${winner + 1} Wins!`;
         subtitle.textContent = 'Better luck next time.';
     }
-
+ 
     overlay.classList.add('show');
 }
 
@@ -251,8 +254,8 @@ function pollGameStatus() {
 function startGame() {
     getPlayerSymbol().then(symbol => {
         playerSymbol = symbol;
-        if (playerNum === 1) {
-            fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=2`)
+        if (playerNum === 0) {
+            fetch(`api/set_player_turn.php?game_id=${gameId}&current_turn=1`)
                 .then(() => runGame());
         } else {
             runGame();
