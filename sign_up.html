@@ -1,148 +1,194 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="general_page_settings.css">
-        <link rel="stylesheet" href="login.css">
-        <link rel="stylesheet" href="sign_up.css">
-        <title>Sign up</title>
-
-        <script>
-            // check whether given character is a letter
-            function isLetter(char) {
-                return /^[a-zA-Z]$/.test(char);
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="general_page_settings.css">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="sign_up.css">
+    <title>Sign up</title>
+    <script>
+        function isLetter(char) {
+            return /^[a-zA-Z]$/.test(char);
+        }
+        function isLowercase(char) {
+            return /^[a-z]$/.test(char);
+        }
+        function isUppercase(char) {
+            return /^[A-Z]$/.test(char);
+        }
+        function isDigit(char) {
+            return /^[0-9]$/.test(char);
+        }
+        function isSpecialChar(char) {
+            return /^[^a-zA-Z0-9]$/.test(char);
+        }
+        function containsDigitsAndLetters(text) {
+            for (let i = 0; i < text.length; i++) {
+                if (!(isLetter(text[i]) || isDigit(text[i]))) return false;
             }
-
-            // check whether given character is lowercase
-            function isLowercase(char) {
-                return /^[a-z]$/.test(char);
+            return true;
+        }
+        function isProperPassword(password) {
+            let containsUpper = false, containsLower = false,
+                containsDigit = false, containsSpecial = false;
+            for (let i = 0; i < password.length; i++) {
+                if (!containsUpper)   containsUpper   = isUppercase(password[i]);
+                if (!containsLower)   containsLower   = isLowercase(password[i]);
+                if (!containsDigit)   containsDigit   = isDigit(password[i]);
+                if (!containsSpecial) containsSpecial = isSpecialChar(password[i]);
             }
-
-            // check whether given character is uppercase
-            function isUppercase(char) {
-                return /^[A-Z]$/.test(char);
+            return containsUpper && containsLower && containsDigit && containsSpecial;
+        }
+        function checkForErrors(event) {
+            event.preventDefault();
+            const usernameError      = document.getElementById('username_error');
+            const passwordError      = document.getElementById('password_error');
+            const repeatPasswordError = document.getElementById('repeat_password_error');
+            if (usernameError.innerHTML === "" &&
+                passwordError.innerHTML === "" &&
+                repeatPasswordError.innerHTML === "") {
+                document.getElementById("signup_form").submit();
             }
+        }
+    </script>
+</head>
+<body>
 
-            // check whether given character is a number
-            function isDigit(char) {
-                return /^[0-9]$/.test(char);
-            }
-            
-            // check whether given character is a special characters
-            function isSpecialChar(char) {
-                return /^[^a-zA-Z0-9]$/.test(char);
-            }
+<!-- Tic-tac-toe animated background (shared with login) -->
+<div class="bg-wrapper">
 
-            // check whether given text contains only numbers and letters
-            function containsDigitsAndLetters(text) {
-                let isValid = false;
-                for (let i = 0; i < text.length; i++) {
-                    isValid = (isLetter(text[i]) || isDigit(text[i]));
-                    if (!isValid) return false;
-                }
-                return true;
-            }
+    <!-- MAIN BOARD — X wins diagonal -->
+    <div class="tic-tac-toe-bg main-board">
+        <svg class="board-svg" viewBox="0 0 300 300">
+            <line class="grid-line" x1="100" y1="10" x2="100" y2="290"/>
+            <line class="grid-line" x1="200" y1="10" x2="200" y2="290"/>
+            <line class="grid-line" x1="10"  y1="100" x2="290" y2="100"/>
+            <line class="grid-line" x1="10"  y1="200" x2="290" y2="200"/>
+            <g class="token delay-1">
+                <line class="token-x-line" x1="25" y1="25" x2="75" y2="75"/>
+                <line class="token-x-line" x1="75" y1="25" x2="25" y2="75"/>
+            </g>
+            <g class="token delay-2"><circle class="token-o" cx="150" cy="50" r="25"/></g>
+            <g class="token delay-3">
+                <line class="token-x-line" x1="125" y1="125" x2="175" y2="175"/>
+                <line class="token-x-line" x1="175" y1="125" x2="125" y2="175"/>
+            </g>
+            <g class="token delay-4"><circle class="token-o" cx="50" cy="150" r="25"/></g>
+            <g class="token delay-5">
+                <line class="token-x-line" x1="225" y1="225" x2="275" y2="275"/>
+                <line class="token-x-line" x1="275" y1="225" x2="225" y2="275"/>
+            </g>
+            <line class="win-line win-x" x1="25" y1="25" x2="275" y2="275"/>
+        </svg>
+    </div>
 
-            function isProperPassword(password) {
-                let containsUpper = false;
-                let containsLower = false;
-                let containsDigit = false;
-                let containsSpecial = false;
+    <!-- TOP-LEFT BOARD — Draw -->
+    <div class="tic-tac-toe-bg mini-board top-left">
+        <svg class="board-svg" viewBox="0 0 300 300">
+            <line class="grid-line" x1="100" y1="10" x2="100" y2="290"/>
+            <line class="grid-line" x1="200" y1="10" x2="200" y2="290"/>
+            <line class="grid-line" x1="10"  y1="100" x2="290" y2="100"/>
+            <line class="grid-line" x1="10"  y1="200" x2="290" y2="200"/>
+            <g class="token delay-1"><line class="token-x-line" x1="25" y1="25" x2="75" y2="75"/><line class="token-x-line" x1="75" y1="25" x2="25" y2="75"/></g>
+            <g class="token delay-2"><circle class="token-o" cx="150" cy="50" r="25"/></g>
+            <g class="token delay-3"><line class="token-x-line" x1="225" y1="25" x2="275" y2="75"/><line class="token-x-line" x1="275" y1="25" x2="225" y2="75"/></g>
+            <g class="token delay-4"><circle class="token-o" cx="150" cy="150" r="25"/></g>
+            <g class="token delay-5"><line class="token-x-line" x1="25" y1="125" x2="75" y2="175"/><line class="token-x-line" x1="75" y1="125" x2="25" y2="175"/></g>
+            <g class="token delay-6"><circle class="token-o" cx="250" cy="150" r="25"/></g>
+            <g class="token delay-7"><line class="token-x-line" x1="125" y1="225" x2="175" y2="275"/><line class="token-x-line" x1="175" y1="225" x2="125" y2="275"/></g>
+            <g class="token delay-8"><circle class="token-o" cx="50" cy="250" r="25"/></g>
+            <g class="token delay-9"><line class="token-x-line" x1="225" y1="225" x2="275" y2="275"/><line class="token-x-line" x1="275" y1="225" x2="225" y2="275"/></g>
+        </svg>
+    </div>
 
-                for (let i = 0; i < password.length; i++) {
-                    if (!containsUpper) containsUpper = isUppercase(password[i]);
-                    if (!containsLower) containsLower = isLowercase(password[i]);
-                    if (!containsDigit) containsDigit = isDigit(password[i]);
-                    if (!containsSpecial) containsSpecial = isSpecialChar(password[i]);
-                }
-                return containsUpper && containsLower && containsDigit && containsSpecial;
-            }
+    <!-- BOTTOM-RIGHT BOARD — O wins top row -->
+    <div class="tic-tac-toe-bg mini-board bottom-right">
+        <svg class="board-svg" viewBox="0 0 300 300">
+            <line class="grid-line" x1="100" y1="10" x2="100" y2="290"/>
+            <line class="grid-line" x1="200" y1="10" x2="200" y2="290"/>
+            <line class="grid-line" x1="10"  y1="100" x2="290" y2="100"/>
+            <line class="grid-line" x1="10"  y1="200" x2="290" y2="200"/>
+            <g class="token delay-1"><line class="token-x-line" x1="125" y1="125" x2="175" y2="175"/><line class="token-x-line" x1="175" y1="125" x2="125" y2="175"/></g>
+            <g class="token delay-2"><circle class="token-o" cx="50"  cy="50" r="25"/></g>
+            <g class="token delay-3"><line class="token-x-line" x1="25" y1="225" x2="75" y2="275"/><line class="token-x-line" x1="75" y1="225" x2="25" y2="275"/></g>
+            <g class="token delay-4"><circle class="token-o" cx="150" cy="50" r="25"/></g>
+            <g class="token delay-5"><line class="token-x-line" x1="125" y1="225" x2="175" y2="275"/><line class="token-x-line" x1="175" y1="225" x2="125" y2="275"/></g>
+            <g class="token delay-6"><circle class="token-o" cx="250" cy="50" r="25"/></g>
+            <line class="win-line win-o" x1="25" y1="50" x2="275" y2="50"/>
+        </svg>
+    </div>
 
-            function checkForErrors(event) {
-                event.preventDefault(); 
-                let usernameErrorDiv = document.getElementById('username_error');
-                let passwordErrorDiv = document.getElementById('password_error');
-                let repeatPasswordErrorDiv = document.getElementById('repeat_password_error');
+</div>
 
-                if (usernameErrorDiv.innerHTML === "" &&
-                    passwordErrorDiv.innerHTML === "" &&
-                    repeatPasswordErrorDiv.innerHTML === "") {
-                    document.getElementById("signup_form").submit();
-                }
-            }
-        </script>
-    </head>
+<!-- Sign up card -->
+<div id="signup-container">
+    <h1>SIGN UP</h1>
 
-    <body>
-        <div class="container" id="sign_up_form">
-            <h1>Sign up:</h1>
-            <form id="signup_form" method="post" action="create_user.php" autocomplete="off">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-                <div class="error" id="username_error"></div>
+    <form id="signup_form" method="post" action="create_user.php" autocomplete="off">
 
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-                <div class="error" id="password_error"></div>
-                
-                <label for="repeat_password">Repeat password</label>
-                <input type="password" id="repeat_password" name="repeat_password" required>
-                <div class="error" id="repeat_password_error"></div>
-                
-                <button type="button" onClick="checkForErrors(event)">SIGN UP</button>
-            </form>
+        <div id="signup-form">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <div class="field-error" id="username_error"></div>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <div class="field-error" id="password_error"></div>
+
+            <label for="repeat_password">Repeat password</label>
+            <input type="password" id="repeat_password" name="repeat_password" required>
+            <div class="field-error" id="repeat_password_error"></div>
+
+            <button type="button" id="signup-btn" onclick="checkForErrors(event)">SIGN UP</button>
         </div>
 
-        <script>
-            let usernameInput = document.getElementById('username');
-            let usernameErrorDiv = document.getElementById('username_error');
+    </form>
 
-            usernameInput.addEventListener('input', function() {
-            let username = usernameInput.value;
-            
-            // check whether username is of correct length
-            if ((username.length < 3 || username.length > 40) && username.length > 0) {
-                usernameErrorDiv.innerHTML = '<p style="color: red;">The username must be 3-40 characters long!</p>';
-            } else {
-                // check whether username contains only numbers and letters
-                if (!containsDigitsAndLetters(username) && username.length > 0) {
-                    usernameErrorDiv.innerHTML = '<p style="color: red;">The username can only contain letters and numbers!';
-                } else usernameErrorDiv.innerHTML = "";
-            }
-            })
-        </script>
+    <div id="login-link">
+        <p>Already have an account? <a href="login.php">Log in!</a></p>
+    </div>
+</div>
 
-        <script>
-            let passwordInput = document.getElementById('password');
-            let passwordErrorDiv = document.getElementById('password_error');
+<script>
+    const usernameInput        = document.getElementById('username');
+    const passwordInput        = document.getElementById('password');
+    const repeatPasswordInput  = document.getElementById('repeat_password');
+    const usernameError        = document.getElementById('username_error');
+    const passwordError        = document.getElementById('password_error');
+    const repeatPasswordError  = document.getElementById('repeat_password_error');
 
-            passwordInput.addEventListener('input', function() {
-            let password = passwordInput.value;
+    usernameInput.addEventListener('input', function() {
+        const username = usernameInput.value;
+        if ((username.length < 3 || username.length > 40) && username.length > 0) {
+            usernameError.innerHTML = '<p>The username must be 3–40 characters long!</p>';
+        } else if (!containsDigitsAndLetters(username) && username.length > 0) {
+            usernameError.innerHTML = '<p>The username can only contain letters and numbers!</p>';
+        } else {
+            usernameError.innerHTML = "";
+        }
+    });
 
-            // check whether password is of correct length     
-            if ((password.length < 8 || password.length > 64) && password.length > 0) {
-                passwordErrorDiv.innerHTML = '<p style="color: red;">The password must be 8-64 characters long!</p>';
-            } else {
-                // check whether password contains at least one number, uppercase, lowercase letter and special character
-                if (!isProperPassword(password) && password.length > 0) {
-                    passwordErrorDiv.innerHTML = '<p style="color: red;">The username must contain at least one uppercase and lowercase letter, digit, special character!';
-                } else passwordErrorDiv.innerHTML = "";
-            }
-            })
-        </script>
+    passwordInput.addEventListener('input', function() {
+        const password = passwordInput.value;
+        if ((password.length < 8 || password.length > 64) && password.length > 0) {
+            passwordError.innerHTML = '<p>The password must be 8–64 characters long!</p>';
+        } else if (!isProperPassword(password) && password.length > 0) {
+            passwordError.innerHTML = '<p>Must contain uppercase, lowercase, digit &amp; special character!</p>';
+        } else {
+            passwordError.innerHTML = "";
+        }
+    });
 
-        <script>
-            let repeatPasswordInput = document.getElementById('repeat_password');
-            let repeatPasswordErrorDiv = document.getElementById('repeat_password_error');
+    repeatPasswordInput.addEventListener('input', function() {
+        const password       = passwordInput.value;
+        const repeatPassword = repeatPasswordInput.value;
+        if (password !== repeatPassword && password !== "" && repeatPassword !== "") {
+            repeatPasswordError.innerHTML = '<p>Passwords do not match!</p>';
+        } else {
+            repeatPasswordError.innerHTML = '';
+        }
+    });
+</script>
 
-            repeatPasswordInput.addEventListener('input', function() {
-            let password = passwordInput.value;
-            let repeat_password = repeatPasswordInput.value;
-            
-            // check whether repeated password is the same as the initial one
-            if (password !== repeat_password && password !== "" && repeat_password !== "") {
-                repeatPasswordErrorDiv.innerHTML = '<p style="color: red;">The repeated password is not the same!';
-            } else repeatPasswordErrorDiv.innerHTML = '';
-            })
-        </script>
-    </body>
+</body>
 </html>

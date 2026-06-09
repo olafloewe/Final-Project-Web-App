@@ -1,136 +1,225 @@
-/* -- Menu container -------------------------------------------------------- */
+/* ==========================================================================
+   COLOR PALETTE (duplicated here so menu works standalone if needed)
+   ========================================================================== */
+:root {
+    --dark-teal:   #469b9b;
+    --medium-teal: #5bb5b5;
+    --main-teal:   #7bc4c4;
+    --light-teal:  #8edbdb;
+    --pale-teal:   #afebeb;
+}
+
+/* ==========================================================================
+   BODY & BACKGROUND
+   ========================================================================== */
+body {
+    background: radial-gradient(circle, var(--light-teal) 0%, var(--medium-teal) 50%, var(--dark-teal) 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   INTERACTIVE CANVAS BACKGROUND
+   ========================================================================== */
+#bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.25;
+}
+
+/* ==========================================================================
+   MENU CARD
+   ========================================================================== */
 #menu-container {
+    position: relative;
+    z-index: 10;
+    background: #fff;
+    border-radius: 16px;
+    padding: 50px 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    width: 100%;
+    max-width: 380px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    margin-top: 80px;
+    gap: 14px;
 }
 
 #menu-container h1 {
-    color: #fff;
-    margin-bottom: 24px;
-    font-size: 1.8rem;
-    text-align: center;
+    margin: 0 0 10px;
+    font-size: 1.6rem;
+    color: var(--dark-teal);
+    letter-spacing: 2px;
+    line-height: 1.3;
 }
 
-/* -- Menu buttons ---------------------------------------------------------- */
-#create-game-btn,
-#join-game-btn {
-    background: #2563eb;
-    color: #fff;
+/* ==========================================================================
+   MENU BUTTONS
+   ========================================================================== */
+#menu-container button,
+#menu-container form button {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: bold;
     border: none;
     border-radius: 8px;
-    padding: 14px 40px;
-    font-size: 1rem;
     cursor: pointer;
-    width: 200px;
+    letter-spacing: 1px;
+    transition: background 0.3s, transform 0.1s;
 }
 
-#create-game-btn:hover,
-#join-game-btn:hover {
-    background: #1d4ed8;
+#menu-container form button,
+#join-btn {
+    background: var(--dark-teal);
+    color: #fff;
+}
+
+#menu-container form button:hover,
+#join-btn:hover {
+    background: var(--medium-teal);
+}
+
+#menu-container form button:active,
+#join-btn:active {
+    transform: scale(0.98);
 }
 
 #profile-btn {
-    background: #fff;
-    color: #2563eb;
-    border: 2px solid #2563eb;
+    background: transparent;
+    color: var(--dark-teal);
+    border: 2px solid var(--light-teal) !important;
     border-radius: 8px;
-    padding: 12px 40px;
-    font-size: 1rem;
-    cursor: pointer;
-    width: 200px;
 }
 
 #profile-btn:hover {
-    background: #eff6ff;
+    background: var(--pale-teal) !important;
 }
 
-/* -- Join game modal ------------------------------------------------------- */
-#join-modal-overlay {
+/* ==========================================================================
+   MODAL OVERLAY
+   ========================================================================== */
+#modal-container {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    z-index: 1000;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 100;
     justify-content: center;
     align-items: center;
 }
 
-#join-modal-overlay.show {
+#modal-container.show-modal {
     display: flex;
 }
 
+/* ==========================================================================
+   JOIN GAME MODAL CARD
+   ========================================================================== */
 #join-modal {
     background: #fff;
     border-radius: 16px;
     padding: 40px;
+    width: 100%;
+    max-width: 340px;
+    box-sizing: border-box;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     text-align: center;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
-    max-width: 360px;
-    width: 90%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 #join-modal h2 {
-    margin: 0 0 8px;
+    margin: 0 0 4px;
+    color: var(--dark-teal);
+    font-size: 1.5rem;
+    letter-spacing: 2px;
 }
 
-#game-code-input {
-    display: block;
+#join-modal p {
+    margin: 0;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+#game_code {
     width: 100%;
-    padding: 10px;
-    font-size: 1.2rem;
-    letter-spacing: 0.15em;
-    text-align: center;
-    border: 2px solid #ddd;
+    padding: 12px;
+    border: 2px solid var(--light-teal);
     border-radius: 8px;
-    margin: 16px 0 8px;
+    background: #f9ffff;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    text-align: center;
+    text-transform: uppercase;
     box-sizing: border-box;
+    transition: border-color 0.3s;
 }
 
-#game-code-input:focus {
-    border-color: #2563eb;
+#game_code:focus {
+    border-color: var(--medium-teal);
     outline: none;
 }
 
+/* Inline code validation error */
 #game-code-error {
-    min-height: 24px;
-    margin-bottom: 8px;
+    min-height: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #d32f2f;
 }
 
-.error-text {
-    color: #dc2626;
+#game-code-error p {
     margin: 0;
-    font-size: 0.9rem;
+    color: #d32f2f;
 }
 
+/* Join submit button */
 #join-submit-btn {
-    background: #2563eb;
+    width: 100%;
+    padding: 12px;
+    background: var(--dark-teal);
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 12px 32px;
     font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
 }
 
-#join-submit-btn:hover {
-    background: #1d4ed8;
-}
+#join-submit-btn:hover  { background: var(--medium-teal); }
+#join-submit-btn:active { transform: scale(0.98); }
 
-#close-join-btn {
+/* Close button */
+#close-button {
     position: absolute;
-    top: 12px;
-    right: 16px;
-    background: none;
+    top: 14px; right: 16px;
+    background: transparent;
     border: none;
     font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--dark-teal);
     cursor: pointer;
-    color: #888;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
 }
 
-#close-join-btn:hover {
-    color: #333;
+#close-button:hover {
+    background: var(--pale-teal);
 }
