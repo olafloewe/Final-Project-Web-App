@@ -1,10 +1,10 @@
 // -- Game variables (injected by board.php via data attributes) --------------
-// winner sentinels: -1 = in progress, -2 = tie, 0 = player 0 won, 1 = player 1 won
 const boardEl    = document.getElementById('board');
 let gameId       = parseInt(boardEl.dataset.gameId);
 let userId       = parseInt(boardEl.dataset.userId);
 let playerNum    = parseInt(boardEl.dataset.playerNum);
 
+// -- Game state variables ------------------------------------------------------
 let isPlayerTurn = false;
 let playerSymbol = '';
 let currentTurn  = -1;
@@ -25,6 +25,7 @@ cells.forEach(cell => {
         if (!isPlayerTurn || gameOver()) return;
         if (cell.innerHTML !== '') return;
 
+        // update the cell with the player's symbol
         if (playerSymbol === 'O') {
             cell.innerHTML = '<img src="./images/blue_circle.png" width="60" height="auto">';
         } else {
@@ -45,11 +46,13 @@ function getPlayerSymbol() {
         .then(data => data.symbol);
 }
 
+// saves the current game state to the database
 function setGameState() {
     return fetch(`api/set_game_state.php?game_id=${gameId}&game_state=${gameState}`)
         .then(() => console.log('Game state saved'));
 }
 
+// polls the database for the latest game state and updates local variables
 function updateGameState() {
     return fetch(`api/get_game_state.php?game_id=${gameId}`)
         .then(res => res.json())
@@ -59,6 +62,7 @@ function updateGameState() {
         });
 }
 
+// polls the database for the current player's turn, updates local variable, and switches turn if needed
 async function changePlayerTurn() {
     const res   = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
     const data  = await res.json();
@@ -67,6 +71,7 @@ async function changePlayerTurn() {
     console.log('Turn switched from', currentTurn);
 }
 
+// sets the winner in the database and updates local variable
 function setWinner() {
     return fetch(`api/set_winner.php?game_id=${gameId}&winner=${userId}`)
         .then(res => res.json())
@@ -76,6 +81,7 @@ function setWinner() {
         });
 }
 
+// sets a tie in the database and updates local variable
 function setTie() {
     return fetch(`api/set_tie.php?game_id=${gameId}`)
         .then(res => res.json())
@@ -85,6 +91,7 @@ function setTie() {
         });
 }
 
+// polls the database for the winner and updates local variable
 function getWinner() {
     return fetch(`api/get_winner.php?game_id=${gameId}`)
         .then(res => res.json())
@@ -95,13 +102,15 @@ function getWinner() {
 }
 
 // -- Board view ---------------------------------------------------------------
+// adds the 'show' class to all cells to make them visible and enable interaction
 function enableBoard() {
     cells.forEach(cell => cell.classList.add('show'));
 }
 
+// updates the board view based on the current game state, showing X and O images in the appropriate cells
 function updateBoardView() {
     cells.forEach(cell => {
-        const idx = cell.dataset.num;
+        const idx = cell.dataset.num; 
         if (gameState[idx] === 'X') {
             cell.innerHTML = '<img src="./images/black_x.png" width="60" height="auto">';
         } else if (gameState[idx] === 'O') {
@@ -110,11 +119,12 @@ function updateBoardView() {
     });
 }
 
-// -- Win / tie detection ------------------------------------------------------
+// checks if all cells are filled (no '-' characters in game state)
 function isBoardFull() {
     return newGameState.every(cell => cell !== '-');
 }
 
+// checks for winning combinations (3 in a row, column, or diagonal) and calls setWinner or setTie as appropriate
 async function checkForWinner() {
     let playerWon = false;
 
@@ -139,6 +149,7 @@ async function checkForWinner() {
         step = 2;
     }
 
+    // if player won, set winner; if board is full and no winner, set tie
     if (playerWon) {
         await setWinner();
     } else if (isBoardFull()) {
@@ -147,6 +158,7 @@ async function checkForWinner() {
 }
 
 // -- Game loop ----------------------------------------------------------------
+// waits for the player to make a move by polling the game state until it changes, then checks for winner and updates turn
 async function waitForMove() {
     while (gameState === newGameState.join('')) {
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -158,6 +170,7 @@ async function waitForMove() {
     await checkForWinner();
 }
 
+// waits for the player's turn by polling the current turn from the database, otherwise continues polling
 async function waitForTurn() {
     const res = await fetch(`api/get_player_turn.php?game_id=${gameId}`);
     const data = await res.json();
@@ -180,6 +193,7 @@ async function waitForTurn() {
     return waitForTurn();
 }
 
+// main game loop
 async function runGame() {
     enableBoard();
 
@@ -197,6 +211,7 @@ async function runGame() {
 }
 
 // -- Result modal -------------------------------------------------------------
+// modal content based on the winner and shows the modal
 function showResultModal() {
     const overlay  = document.getElementById('result-modal-overlay');
     const icon     = document.getElementById('result-icon');
@@ -207,6 +222,7 @@ function showResultModal() {
     const winnerLabel = `Player ${winner + 1}`;
     const otherLabel  = `Player ${(playerNum === 0) ? 2 : 1}`;
 
+    // set modal content based on winner (-2 = tie, playerNum = win, other player = loss)
     if (winner === -2) {
         icon.textContent     = '🤝';
         title.textContent    = "It's a Tie!";
@@ -224,21 +240,25 @@ function showResultModal() {
     overlay.classList.add('show');
 }
 
+// hides the result modal
 function closeResultModal() {
     document.getElementById('result-modal-overlay').classList.remove('show');
 }
 
 // -- Invite modal -------------------------------------------------------------
+// copies the game code to the clipboard and shows an alert
 function copyGameCode() {
     const code = document.getElementById('game-code').textContent;
     navigator.clipboard.writeText(code).then(() => alert('Code copied to clipboard!'));
 }
 
+// closes the invite modal
 function closeInviteModal() {
     document.getElementById('invite-modal-overlay').classList.remove('show');
 }
 
 // -- Game status polling ------------------------------------------------------
+// polls the database for the game status, and starts the game when both players have joined
 function pollGameStatus() {
     fetch(`api/check_game_status.php?game_id=${gameId}`)
         .then(res => res.json())
@@ -252,6 +272,7 @@ function pollGameStatus() {
         });
 }
 
+// starts the game by getting the player's symbol and setting the initial turn if this player is player 1
 function startGame() {
     getPlayerSymbol().then(symbol => {
         playerSymbol = symbol;

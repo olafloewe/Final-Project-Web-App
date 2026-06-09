@@ -1,15 +1,18 @@
 <?php
 session_start();
+// database login
 include('db_credentials.php');
 
 $user_id = $_SESSION['user_id'] ?? '';
 
+// If the user is not logged in, return an empty history
 if (empty($user_id)) {
     http_response_code(401);
     echo json_encode([]);
     exit();
 }
 
+// sql statement to fetch the match history for the logged-in user
 $sql = '
     SELECT
         g.game_id,
@@ -27,6 +30,7 @@ $sql = '
     ORDER BY g.game_id DESC
 ';
 
+//  prepare and execute the statement with injection prevention
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
@@ -34,6 +38,7 @@ $stmt->execute();
 $games   = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $history = [];
 
+// Process each game to determine the winner and the result for the logged-in user
 foreach ($games as $game) {
     if ($game['winner'] === null) {
         $result      = 'Tie';
@@ -55,5 +60,6 @@ foreach ($games as $game) {
     ];
 }
 
+// Return the match history as JSON
 header('Content-Type: application/json');
 echo json_encode($history);
